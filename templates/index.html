@@ -431,6 +431,242 @@
     <script>
         let chartInstance = null;
 
+        const INITIAL_HISTORIAL = [
+            { sim_id: 12, fecha: "2026-11-10 04:43:21", usuario_equipo: "Grupo Paralelo A - UMSA", tipo: "MAL_CONDICIONADO", parametros_json: '{"condicion_A": 7627.3346, "tolerancia": 1e-06, "b": [1.9167666666666667, 1.1168666666666667, 0.7998999999999999, 0.6262904761904763]}', num_metodos: 4 },
+            { sim_id: 11, fecha: "2026-11-10 04:34:01", usuario_equipo: "Grupo Paralelo A - UMSA", tipo: "ESTRES", parametros_json: '{"condicion_A": 2.3597, "tolerancia": 1e-10, "b": [6.05, 24.95, -10.95, 14.95]}', num_metodos: 4 },
+            { sim_id: 10, fecha: "2026-11-10 04:32:51", usuario_equipo: "Grupo Paralelo A - UMSA", tipo: "NORMAL", parametros_json: '{"condicion_A": 2.3597, "tolerancia": 1e-06, "b": [6.0, 25.0, -11.0, 15.0]}', num_metodos: 4 },
+            { sim_id: 9, fecha: "2026-11-10 04:32:47", usuario_equipo: "Grupo Paralelo A - UMSA", tipo: "ESTRES", parametros_json: '{"condicion_A": 2.3597, "tolerancia": 1e-10, "b": [6.05, 24.95, -10.95, 14.95]}', num_metodos: 4 },
+            { sim_id: 8, fecha: "2026-11-10 04:31:05", usuario_equipo: "Grupo Paralelo A - UMSA", tipo: "NORMAL", parametros_json: '{"condicion_A": 2.3597, "tolerancia": 1e-06, "b": [6.0, 25.0, -11.0, 15.0]}', num_metodos: 4 },
+            { sim_id: 7, fecha: "2026-11-10 03:51:52", usuario_equipo: "Grupo Paralelo A - UMSA", tipo: "MAL_CONDICIONADO", parametros_json: '{"condicion_A": 7627.3346, "tolerancia": 1e-06, "b": [1.9167666666666667, 1.1168666666666667, 0.7998999999999999, 0.6262904761904763]}', num_metodos: 4 },
+            { sim_id: 6, fecha: "2026-11-10 03:50:28", usuario_equipo: "Grupo Paralelo A - UMSA", tipo: "ESTRES", parametros_json: '{"condicion_A": 2.3597, "tolerancia": 1e-10, "b": [6.05, 24.95, -10.95, 14.95]}', num_metodos: 4 },
+            { sim_id: 5, fecha: "2026-11-10 03:50:08", usuario_equipo: "Grupo Paralelo A - UMSA", tipo: "NORMAL", parametros_json: '{"condicion_A": 2.3597, "tolerancia": 1e-06, "b": [6.0, 25.0, -11.0, 15.0]}', num_metodos: 4 }
+        ];
+
+        function normInf(vec) {
+            return Math.max(...vec.map(v => Math.abs(v)));
+        }
+
+        function matVec(A, x) {
+            return A.map(row => row.reduce((acc, val, j) => acc + val * x[j], 0));
+        }
+
+        function vecSub(a, b) {
+            return a.map((v, i) => v - b[i]);
+        }
+
+        function dot(a, b) {
+            return a.reduce((acc, v, i) => acc + v * b[i], 0);
+        }
+
+        function calcularErrores(xAprox, xRef, A, b) {
+            const errAbs = normInf(vecSub(xAprox, xRef));
+            const normRef = Math.max(normInf(xRef), 1e-14);
+            const errRel = errAbs / normRef;
+            const errPct = errRel * 100.0;
+            const residual = normInf(vecSub(matVec(A, xAprox), b));
+            return { errAbs, errRel, errPct, residual };
+        }
+
+        function solveLUJS(A, b, xRef) {
+            const t0 = performance.now();
+            const n = b.length;
+            const L = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (__, j) => (i === j ? 1 : 0)));
+            const U = A.map(row => [...row]);
+            for (let i = 0; i < n; i++) {
+                for (let j = i + 1; j < n; j++) {
+                    const factor = U[j][i] / U[i][i];
+                    L[j][i] = factor;
+                    for (let k = i; k < n; k++) U[j][k] -= factor * U[i][k];
+                }
+            }
+            const y = new Array(n).fill(0);
+            for (let i = 0; i < n; i++) {
+                let s = 0;
+                for (let k = 0; k < i; k++) s += L[i][k] * y[k];
+                y[i] = b[i] - s;
+            }
+            const x = new Array(n).fill(0);
+            for (let i = n - 1; i >= 0; i--) {
+                let s = 0;
+                for (let k = i + 1; k < n; k++) s += U[i][k] * x[k];
+                x[i] = (y[i] - s) / U[i][i];
+            }
+            const tMs = performance.now() - t0;
+            const { errAbs, errRel, residual } = calcularErrores(x, xRef, A, b);
+            const historial = [{
+                iter: 1,
+                x: x.map(v => Number(v.toFixed(6))),
+                residual,
+                error_abs: errAbs,
+                error_rel: errRel
+            }];
+            return { x, historial, convergio: true, tMs };
+        }
+
+        function solveJacobiJS(A, b, xRef, tol = 1e-6, maxIter = 500) {
+            const t0 = performance.now();
+            const n = b.length;
+            let x = new Array(n).fill(0);
+            const historial = [];
+            let convergio = false;
+            for (let k = 1; k <= maxIter; k++) {
+                const xNew = new Array(n).fill(0);
+                for (let i = 0; i < n; i++) {
+                    let s = 0;
+                    for (let j = 0; j < n; j++) if (j !== i) s += A[i][j] * x[j];
+                    xNew[i] = (b[i] - s) / A[i][i];
+                }
+                const { errAbs, errRel, residual } = calcularErrores(xNew, xRef, A, b);
+                historial.push({
+                    iter: k,
+                    x: xNew.map(v => Number(v.toFixed(6))),
+                    residual,
+                    error_abs: errAbs,
+                    error_rel: errRel
+                });
+                if (normInf(vecSub(xNew, x)) < tol) {
+                    convergio = true;
+                    x = xNew;
+                    break;
+                }
+                x = xNew;
+                if (errAbs > 1e100) break;
+            }
+            return { x, historial, convergio, tMs: performance.now() - t0 };
+        }
+
+        function solveGaussSeidelJS(A, b, xRef, tol = 1e-6, maxIter = 500) {
+            const t0 = performance.now();
+            const n = b.length;
+            const x = new Array(n).fill(0);
+            const historial = [];
+            let convergio = false;
+            for (let k = 1; k <= maxIter; k++) {
+                const xOld = [...x];
+                for (let i = 0; i < n; i++) {
+                    let s1 = 0, s2 = 0;
+                    for (let j = 0; j < i; j++) s1 += A[i][j] * x[j];
+                    for (let j = i + 1; j < n; j++) s2 += A[i][j] * xOld[j];
+                    x[i] = (b[i] - s1 - s2) / A[i][i];
+                }
+                const { errAbs, errRel, residual } = calcularErrores(x, xRef, A, b);
+                historial.push({
+                    iter: k,
+                    x: x.map(v => Number(v.toFixed(6))),
+                    residual,
+                    error_abs: errAbs,
+                    error_rel: errRel
+                });
+                if (normInf(vecSub(x, xOld)) < tol) {
+                    convergio = true;
+                    break;
+                }
+            }
+            return { x, historial, convergio, tMs: performance.now() - t0 };
+        }
+
+        function solveCGJS(A, b, xRef, tol = 1e-6, maxIter = 500) {
+            const t0 = performance.now();
+            let x = new Array(b.length).fill(0);
+            let r = vecSub(b, matVec(A, x));
+            let p = [...r];
+            let rsOld = dot(r, r);
+            const historial = [];
+            let convergio = false;
+            for (let k = 1; k <= maxIter; k++) {
+                const Ap = matVec(A, p);
+                const alpha = rsOld / dot(p, Ap);
+                x = x.map((v, i) => v + alpha * p[i]);
+                r = r.map((v, i) => v - alpha * Ap[i]);
+                const rsNew = dot(r, r);
+                const { errAbs, errRel, residual } = calcularErrores(x, xRef, A, b);
+                historial.push({
+                    iter: k,
+                    x: x.map(v => Number(v.toFixed(6))),
+                    residual,
+                    error_abs: errAbs,
+                    error_rel: errRel
+                });
+                if (Math.sqrt(rsNew) < tol) {
+                    convergio = true;
+                    break;
+                }
+                p = r.map((v, i) => v + (rsNew / rsOld) * p[i]);
+                rsOld = rsNew;
+            }
+            return { x, historial, convergio, tMs: performance.now() - t0 };
+        }
+
+        function simularLocalmente(tipo) {
+            const A_base = [
+                [10.0, -1.0,  2.0,  0.0],
+                [-1.0, 11.0, -1.0,  3.0],
+                [ 2.0, -1.0, 10.0, -1.0],
+                [ 0.0,  3.0, -1.0,  8.0]
+            ];
+            const x_exact_base = [1.0, 2.0, -1.0, 1.0];
+            const b_base = matVec(A_base, x_exact_base);
+            let A, b, xRef, tol, condA;
+            if (tipo === "NORMAL") {
+                A = A_base; b = b_base; xRef = x_exact_base; tol = 1e-6; condA = 2.3597;
+            } else if (tipo === "ESTRES") {
+                const delta_b = [0.05, -0.05, 0.05, -0.05];
+                A = A_base;
+                b = b_base.map((v, i) => v + delta_b[i]);
+                xRef = solveLUJS(A, b, x_exact_base).x;
+                tol = 1e-10; condA = 2.3597;
+            } else {
+                A = Array.from({ length: 4 }, (_, i) =>
+                    Array.from({ length: 4 }, (__, j) => 1.0 / (i + j + 1) + (i === j ? 1e-4 : 0.0))
+                );
+                b = matVec(A, x_exact_base);
+                xRef = x_exact_base; tol = 1e-6; condA = 7627.3346;
+            }
+            const maxIter = 500;
+            const metodos = {};
+            const definiciones = [
+                ["Jacobi", () => solveJacobiJS(A, b, xRef, tol, maxIter)],
+                ["Gauss-Seidel", () => solveGaussSeidelJS(A, b, xRef, tol, maxIter)],
+                ["Gradiente Conjugado", () => solveCGJS(A, b, xRef, tol, maxIter)],
+                ["Factorización LU", () => solveLUJS(A, b, xRef)]
+            ];
+            for (const [nombre, fn] of definiciones) {
+                const { x, historial, convergio, tMs } = fn();
+                const { errAbs, errRel, errPct, residual } = calcularErrores(x, xRef, A, b);
+                metodos[nombre] = {
+                    solucion: x.map(v => Number(v.toFixed(6))),
+                    iteraciones_totales: historial.length,
+                    convergio,
+                    tiempo_ms: Number(tMs.toFixed(4)),
+                    error_abs: errAbs,
+                    error_rel: errRel,
+                    error_pct: errPct,
+                    residual,
+                    historial: historial.slice(0, 15)
+                };
+            }
+            const histGuardado = JSON.parse(localStorage.getItem("simtele_historial") || JSON.stringify(INITIAL_HISTORIAL));
+            const nextId = (histGuardado[0]?.sim_id || 12) + 1;
+            const fechaActual = new Date().toISOString().replace("T", " ").substring(0, 19);
+            histGuardado.unshift({
+                sim_id: nextId,
+                fecha: fechaActual,
+                usuario_equipo: "Grupo Paralelo A - UMSA",
+                tipo,
+                parametros_json: JSON.stringify({ condicion_A: condA, tolerancia: tol, b: b.map(v => Number(v.toFixed(6))) }),
+                num_metodos: 4
+            });
+            localStorage.setItem("simtele_historial", JSON.stringify(histGuardado.slice(0, 15)));
+            return {
+                simulacion_id: nextId,
+                escenario: tipo,
+                condicion: condA,
+                tolerancia: tol,
+                referencia: xRef.map(v => Number(v.toFixed(6))),
+                metodos
+            };
+        }
+
         function mostrarVista(vista) {
             ['inicio', 'simulador', 'der', 'historial'].forEach(v => {
                 document.getElementById('vista-' + v).classList.add('hidden');
@@ -443,12 +679,18 @@
             const escenario = escenarioForzado || select.value;
             if (escenarioForzado) select.value = escenarioForzado;
 
-            const res = await fetch('/api/ejecutar', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ escenario })
-            });
-            const data = await res.json();
+            let data;
+            try {
+                const res = await fetch('/api/ejecutar', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ escenario })
+                });
+                if (!res.ok) throw new Error('Modo estático GitHub Pages');
+                data = await res.json();
+            } catch (e) {
+                data = simularLocalmente(escenario);
+            }
 
             document.getElementById('lbl-escenario').textContent = data.escenario;
             document.getElementById('lbl-condicion').textContent = data.condicion;
@@ -526,8 +768,14 @@
         }
 
         async function cargarHistorial() {
-            const res = await fetch('/api/historial');
-            const filas = await res.json();
+            let filas;
+            try {
+                const res = await fetch('/api/historial');
+                if (!res.ok) throw new Error('Modo estático GitHub Pages');
+                filas = await res.json();
+            } catch (e) {
+                filas = JSON.parse(localStorage.getItem("simtele_historial") || JSON.stringify(INITIAL_HISTORIAL));
+            }
             const tbody = document.getElementById('tabla-historial');
             tbody.innerHTML = '';
             filas.forEach(f => {

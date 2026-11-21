@@ -3,480 +3,478 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>SIMTELE-RISK | Plataforma Integrada de Métodos Numéricos</title>
+    <title>SIMTELE-RISK | Plataforma Integrada (Semana 2)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script type="module">
-        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';
-        mermaid.initialize({ startOnLoad: true, theme: 'default' });
-    </script>
 </head>
 
 <body class="bg-slate-50 text-slate-800 font-sans">
 
-    <!-- Barra Superior -->
+    <!-- ================= BARRA SUPERIOR ================= -->
     <header class="bg-slate-900 text-white shadow-md">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-wrap gap-4 justify-between items-center">
             <div>
                 <h1 class="text-xl font-bold tracking-wide">SIMTELE-RISK · UMSA Informática</h1>
-                <p class="text-xs text-slate-300">Sistema de Transporte por Cable · Simulación Numérica y Análisis de
-                    Errores (Avance Semana 1)</p>
+                <p class="text-xs text-slate-300">Simulación Numérica y Análisis de Errores (Avance Semana 2)</p>
             </div>
-            <div class="flex gap-2">
+            <div class="flex flex-wrap gap-2">
                 <button onclick="mostrarVista('inicio')"
-                    class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-sm">Inicio (4 Módulos)</button>
-                <button onclick="mostrarVista('simulador')"
-                    class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded text-sm">Módulo Activo (Sistemas
-                    SPD)</button>
+                    class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-sm font-semibold">Inicio</button>
+                <button onclick="mostrarVista('modulo1'); ejecutarM1('NORMAL');"
+                    class="px-3 py-1.5 bg-red-600 hover:bg-red-500 rounded text-sm font-semibold">M1: Detención</button>
+                <button onclick="mostrarVista('modulo2'); ejecutarM2('NORMAL');"
+                    class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded text-sm font-semibold">M2:
+                    Deterioro</button>
+                <button onclick="mostrarVista('modulo3'); ejecutarM3('NORMAL');"
+                    class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 rounded text-sm font-semibold">M3:
+                    Oscilaciones</button>
+                <button onclick="mostrarVista('modulo4'); ejecutarM4('NORMAL');"
+                    class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 rounded text-sm font-semibold">M4:
+                    Sensores</button>
                 <button onclick="mostrarVista('der')"
-                    class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 rounded text-sm">Modelo de Datos
-                    (DER)</button>
+                    class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 rounded text-sm font-semibold">DER
+                    BD</button>
                 <button onclick="cargarHistorial(); mostrarVista('historial')"
-                    class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 rounded text-sm">Historial BD</button>
+                    class="px-3 py-1.5 bg-slate-600 hover:bg-slate-500 rounded text-sm font-semibold">Historial
+                    BD</button>
             </div>
         </div>
     </header>
 
     <main class="max-w-7xl mx-auto px-6 py-6">
 
-        <!-- VISTA 1: INICIO CON LAS 4 TARJETAS OBLIGATORIAS -->
+        <!-- ================= VISTA 0: INICIO ================= -->
         <section id="vista-inicio" class="space-y-6">
             <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-                <h2 class="text-lg font-bold text-slate-900">Panel General de Casos de Estudio (4 Módulos Obligatorios)
-                </h2>
-                <p class="text-sm text-slate-600 mt-1">Seleccione un módulo para configurar parámetros, elegir el
-                    escenario experimental (Normal, Estrés o Mal Condicionado) y verificar la teoría de errores
-                    transversal.</p>
+                <h2 class="text-lg font-bold text-slate-900">Panel General de Casos de Estudio (4 Módulos Activos -
+                    Semana 2)</h2>
+                <p class="text-sm text-slate-600 mt-1">Seleccione un módulo en la barra superior o en las tarjetas para
+                    ejecutar los escenarios Normal, Estrés y Mal Condicionado.</p>
             </div>
-
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Tarjeta 1 -->
-                <div class="bg-white rounded-lg shadow-sm border-l-4 border-red-500 p-5 border border-slate-200">
-                    <div class="flex justify-between items-start">
-                        <span class="text-xs font-bold uppercase px-2 py-1 bg-red-50 text-red-700 rounded">Módulo 1 ·
-                            EDO + Integración + Raíces</span>
-                        <span class="text-xs text-slate-500 font-medium">Modelo Planteado (Sem. 1)</span>
+                <div onclick="mostrarVista('modulo1'); ejecutarM1('NORMAL');"
+                    class="cursor-pointer hover:shadow-md transition bg-white rounded-lg shadow-sm border-l-4 border-red-500 p-5 border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-bold uppercase px-2 py-1 bg-red-50 text-red-700 rounded">M1 ·
+                            Detención de Emergencia</span>
+                        <h3 class="text-base font-bold mt-2">1. Detención de emergencia de cabinas</h3>
+                        <p class="text-xs text-slate-500 mt-1 font-mono">EDO (RK4), Integración (Simpson 1/3), Raíces
+                            (Bisección)</p>
                     </div>
-                    <h3 class="text-lg font-bold mt-2">1. Detención de emergencia de cabinas</h3>
-                    <p class="text-sm text-slate-600 mt-1">¿Cómo varían tiempo y distancia de detención frente a cambios
-                        de velocidad, reacción y frenado?</p>
-                    <div class="mt-3 bg-slate-50 p-3 rounded text-xs font-mono text-slate-700">
-                        dx/dt = v(t), dv/dt = -a(v,t) | Ref: t_det = v0/a = 4.0 s, d = v0²/(2a) = 12.0 m
-                    </div>
-                    <p class="text-xs text-slate-500 mt-3"><strong>Métodos:</strong> RK2 (Heun), RK4, Trapecio, Simpson
-                        1/3, Romberg, Bisección, Newton-Raphson, Secante.</p>
-                </div>
-
-                <!-- Tarjeta 2 (Activa en Semana 1) -->
-                <div class="bg-white rounded-lg shadow-md border-l-4 border-blue-600 p-5 border border-slate-200">
-                    <div class="flex justify-between items-start">
-                        <span class="text-xs font-bold uppercase px-2 py-1 bg-blue-50 text-blue-700 rounded">Módulo 2 ·
-                            Sistemas Lineales SPD + Raíces</span>
-                        <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded font-semibold">Operativo en
-                            Semana 1</span>
-                    </div>
-                    <h3 class="text-lg font-bold mt-2">2. Deterioro mecánico y mantenimiento</h3>
-                    <p class="text-sm text-slate-600 mt-1">¿Cuándo alcanza el indicador D(t) el umbral de inspección y
-                        cómo se calibran los parámetros SPD?</p>
-                    <div class="mt-3 bg-slate-50 p-3 rounded text-xs font-mono text-slate-700">
-                        A·x* = b (4x4 SPD) con x* = [1, 2, -1, 1]ᵀ | D(t) = D0 + αt + βt² = D_umbral
-                    </div>
-                    <div class="mt-4 flex justify-between items-center">
-                        <span class="text-xs text-slate-500"><strong>Métodos:</strong> Jacobi, Gauss-Seidel, LU,
-                            Gradiente Conjugado.</span>
-                        <button onclick="mostrarVista('simulador')"
-                            class="px-3 py-1.5 bg-blue-600 text-white rounded text-xs font-semibold hover:bg-blue-700">Abrir
-                            Simulador →</button>
+                    <div class="mt-4 flex justify-end">
+                        <span class="px-3 py-1 bg-red-600 text-white rounded text-xs font-semibold">Abrir M1 →</span>
                     </div>
                 </div>
-
-                <!-- Tarjeta 3 -->
-                <div class="bg-white rounded-lg shadow-sm border-l-4 border-amber-500 p-5 border border-slate-200">
-                    <div class="flex justify-between items-start">
-                        <span class="text-xs font-bold uppercase px-2 py-1 bg-amber-50 text-amber-700 rounded">Módulo 3
-                            · EDO 2.º Orden + Integración</span>
-                        <span class="text-xs text-slate-500 font-medium">Modelo Planteado (Sem. 1)</span>
+                <div onclick="mostrarVista('modulo2'); ejecutarM2('NORMAL');"
+                    class="cursor-pointer hover:shadow-md transition bg-white rounded-lg shadow-sm border-l-4 border-blue-600 p-5 border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-bold uppercase px-2 py-1 bg-blue-50 text-blue-700 rounded">M2 ·
+                            Deterioro Mecánico</span>
+                        <h3 class="text-base font-bold mt-2">2. Deterioro mecánico y mantenimiento</h3>
+                        <p class="text-xs text-slate-500 mt-1 font-mono">Sistemas Lineales (Jacobi, GS, GC, LU), Raíces
+                            (Newton-Raphson)</p>
                     </div>
-                    <h3 class="text-lg font-bold mt-2">3. Oscilaciones por viento</h3>
-                    <p class="text-sm text-slate-600 mt-1">¿Cómo se modifica la oscilación lateral ante fuerzas
-                        aerodinámicas externas y amortiguamiento?</p>
-                    <div class="mt-3 bg-slate-50 p-3 rounded text-xs font-mono text-slate-700">
-                        x' = v, v' = (F(t) - c·v - k·x)/m | Energía acumulada: ∫ x(t)² dt
+                    <div class="mt-4 flex justify-end">
+                        <span class="px-3 py-1 bg-blue-600 text-white rounded text-xs font-semibold">Abrir M2 →</span>
                     </div>
-                    <p class="text-xs text-slate-500 mt-3"><strong>Métodos:</strong> RK2, RK4, Trapecio compuesto,
-                        Simpson 1/3 compuesto y Romberg.</p>
                 </div>
-
-                <!-- Tarjeta 4 -->
-                <div class="bg-white rounded-lg shadow-sm border-l-4 border-purple-600 p-5 border border-slate-200">
-                    <div class="flex justify-between items-start">
-                        <span class="text-xs font-bold uppercase px-2 py-1 bg-purple-50 text-purple-700 rounded">Módulo
-                            4 · Interpolación + Calibración</span>
-                        <span class="text-xs text-slate-500 font-medium">Modelo Planteado (Sem. 1)</span>
+                <div onclick="mostrarVista('modulo3'); ejecutarM3('NORMAL');"
+                    class="cursor-pointer hover:shadow-md transition bg-white rounded-lg shadow-sm border-l-4 border-amber-500 p-5 border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-bold uppercase px-2 py-1 bg-amber-50 text-amber-700 rounded">M3 ·
+                            Oscilaciones por viento</span>
+                        <h3 class="text-base font-bold mt-2">3. Oscilaciones laterales por viento</h3>
+                        <p class="text-xs text-slate-500 mt-1 font-mono">EDO de 2.º Orden (RK4), Integración de Energía
+                            (Simpson 1/3)</p>
                     </div>
-                    <h3 class="text-lg font-bold mt-2">4. Reconstrucción de señales de sensores</h3>
-                    <p class="text-sm text-slate-600 mt-1">¿Cómo reconstruir registros faltantes de telemetría y medir
-                        la distorsión producida por ruido?</p>
-                    <div class="mt-3 bg-slate-50 p-3 rounded text-xs font-mono text-slate-700">
-                        Señal ref: y(t) = e^(-0.2t)·sin(t) + 2.0 | Validación con puntos ocultados
+                    <div class="mt-4 flex justify-end">
+                        <span class="px-3 py-1 bg-amber-600 text-white rounded text-xs font-semibold">Abrir M3 →</span>
                     </div>
-                    <p class="text-xs text-slate-500 mt-3"><strong>Métodos:</strong> Polinomio de Lagrange, Diferencias
-                        Divididas de Newton y Splines Cúbicos.</p>
+                </div>
+                <div onclick="mostrarVista('modulo4'); ejecutarM4('NORMAL');"
+                    class="cursor-pointer hover:shadow-md transition bg-white rounded-lg shadow-sm border-l-4 border-purple-600 p-5 border border-slate-200 flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-bold uppercase px-2 py-1 bg-purple-50 text-purple-700 rounded">M4 ·
+                            Reconstrucción de señales</span>
+                        <h3 class="text-base font-bold mt-2">4. Reconstrucción de señales de sensores</h3>
+                        <p class="text-xs text-slate-500 mt-1 font-mono">Interpolación (Lagrange, Diferencias Divididas,
+                            Splines Cúbicos)</p>
+                    </div>
+                    <div class="mt-4 flex justify-end">
+                        <span class="px-3 py-1 bg-purple-600 text-white rounded text-xs font-semibold">Abrir M4 →</span>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- VISTA 2: SIMULADOR DEL MÓDULO 2 (SISTEMAS LINEALES Y ERRORES) -->
-        <section id="vista-simulador" class="hidden space-y-6">
+        <!-- ================= VISTA MÓDULO 1: DETENCIÓN ================= -->
+        <section id="vista-modulo1" class="hidden space-y-6">
             <div
                 class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
                 <div>
-                    <span class="text-xs font-bold uppercase text-blue-600">Caso de Estudio 2 · Calibración Estructural
-                        SPD (4x4)</span>
-                    <h2 class="text-lg font-bold">Ejecución y Comparación de Escenarios (Jacobi, Gauss-Seidel, LU y
-                        Gradiente Conjugado)</h2>
+                    <span class="text-xs font-bold uppercase text-red-600">Módulo 1</span>
+                    <h2 class="text-lg font-bold">Detención de Emergencia (EDO, Raíces, Integración)</h2>
                 </div>
                 <div class="flex items-center gap-3">
-                    <select id="select-escenario"
-                        class="border border-slate-300 rounded px-3 py-1.5 text-sm font-medium">
-                        <option value="NORMAL">Escenario 1: NORMAL (κ₂ = 2.36, tol = 1e-6)</option>
-                        <option value="ESTRES">Escenario 2: ESTRÉS (Perturbación Δb, tol = 1e-10)</option>
-                        <option value="MAL_CONDICIONADO">Escenario 3: MAL CONDICIONADO (Hilbert SPD, κ₂ = 7627.33)
-                        </option>
+                    <select id="select-m1" class="border border-slate-300 rounded px-3 py-1.5 text-sm">
+                        <option value="NORMAL">NORMAL (v0=6.0, a=1.5)</option>
+                        <option value="ESTRES">ESTRÉS (v0=8.5, a=0.75, sobrecarga)</option>
+                        <option value="MAL_CONDICIONADO">MAL COND. (Derivada nula al final)</option>
                     </select>
-                    <button onclick="ejecutarSimulacion()"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded text-sm font-semibold">Ejecutar
-                        y Guardar en BD</button>
+                    <button onclick="ejecutarM1()"
+                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded text-sm font-semibold">Ejecutar
+                        M1</button>
                 </div>
             </div>
-
-            <!-- Resumen de Parámetros y Condicionamiento -->
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div class="bg-white p-4 rounded border border-slate-200">
-                    <p class="text-xs text-slate-500">Escenario Activo</p>
-                    <p id="lbl-escenario" class="text-lg font-bold text-slate-900">-</p>
-                </div>
-                <div class="bg-white p-4 rounded border border-slate-200">
-                    <p class="text-xs text-slate-500">Número de Condición κ₂(A)</p>
-                    <p id="lbl-condicion" class="text-lg font-bold text-blue-600">-</p>
-                </div>
-                <div class="bg-white p-4 rounded border border-slate-200">
-                    <p class="text-xs text-slate-500">Tolerancia de Parada</p>
-                    <p id="lbl-tol" class="text-lg font-bold text-slate-900">-</p>
-                </div>
-                <div class="bg-white p-4 rounded border border-slate-200">
-                    <p class="text-xs text-slate-500">Solución Exacta de Referencia x*</p>
-                    <p id="lbl-ref" class="text-sm font-mono font-bold text-emerald-700 mt-1">-</p>
-                </div>
-            </div>
-
-            <!-- Tabla Comparativa de Métodos -->
-            <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-                <h3 class="text-sm font-bold uppercase text-slate-700 mb-3">Tabla Comparativa de Métodos Lineales y
-                    Teoría de Errores</h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse text-sm">
-                        <thead>
-                            <tr class="bg-slate-100 border-b border-slate-300">
-                                <th class="p-2.5">Método Numérico</th>
-                                <th class="p-2.5">Iteraciones</th>
-                                <th class="p-2.5">Estado</th>
-                                <th class="p-2.5">Vector Aproximado x̃</th>
-                                <th class="p-2.5">Residual ||Ax - b||∞</th>
-                                <th class="p-2.5">Error Abs. ||x* - x̃||∞</th>
-                                <th class="p-2.5">Error Relativo (%)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="tabla-metodos" class="divide-y divide-slate-200 font-mono text-xs"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Gráfico de Convergencia e Interpretación Dual -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-                    <h3 class="text-sm font-bold uppercase text-slate-700 mb-3">Evolución del Error Absoluto por
-                        Iteración (Escala Log10)</h3>
-                    <canvas id="chart-convergencia" height="180"></canvas>
+                    <h3 class="text-sm font-bold text-slate-700 mb-2">1. EDO: Velocidad v(t) con RK4</h3>
+                    <canvas id="chart-m1-edo" height="200"></canvas>
                 </div>
-                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 space-y-4">
-                    <h3 class="text-sm font-bold uppercase text-slate-700">Interpretación Separada Obligatoria</h3>
-                    <div class="p-3 bg-blue-50 border-l-4 border-blue-600 rounded">
-                        <p class="text-xs font-bold text-blue-900">1. Conclusión Numérica (Sobre los Algoritmos):</p>
-                        <p id="txt-conc-num" class="text-xs text-slate-700 mt-1">Seleccione y ejecute un escenario para
-                            comparar convergencia, radio espectral y condicionamiento.</p>
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
+                    <h3 class="text-sm font-bold text-slate-700 mb-2">2. Raíces: Convergencia Bisección (Log10)</h3>
+                    <canvas id="chart-m1-raiz" height="200"></canvas>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 text-sm">
+                <h3 class="font-bold text-slate-700 mb-2">Métricas de Verificación</h3>
+                <p><strong>Tiempo de detención (Bisección):</strong> Exacto = <span id="m1-t-ex"
+                        class="text-emerald-600 font-bold"></span> s | Numérico = <span id="m1-t-num"
+                        class="text-blue-600 font-bold"></span> s</p>
+                <p><strong>Distancia de frenado (Simpson 1/3):</strong> Exacta = <span id="m1-d-ex"
+                        class="text-emerald-600 font-bold"></span> m | Numérica = <span id="m1-d-num"
+                        class="text-blue-600 font-bold"></span> m</p>
+            </div>
+        </section>
+
+        <!-- ================= VISTA MÓDULO 2: DETERIORO ================= -->
+        <section id="vista-modulo2" class="hidden space-y-6">
+            <div
+                class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
+                <div>
+                    <span class="text-xs font-bold uppercase text-blue-600">Módulo 2</span>
+                    <h2 class="text-lg font-bold">Deterioro Mecánico (Sistemas SPD y Raíces)</h2>
+                </div>
+                <div class="flex items-center gap-3">
+                    <select id="select-m2" class="border border-slate-300 rounded px-3 py-1.5 text-sm font-medium">
+                        <option value="NORMAL">NORMAL (κ₂ = 2.36, tol = 1e-6)</option>
+                        <option value="ESTRES">ESTRÉS (Perturbación Δb, tol = 1e-10)</option>
+                        <option value="MAL_CONDICIONADO">MAL CONDICIONADO (Hilbert SPD, κ₂ ≈ 7627)</option>
+                    </select>
+                    <button onclick="ejecutarM2()"
+                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded text-sm font-semibold">Ejecutar
+                        M2</button>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
+                    <h3 class="text-sm font-bold text-slate-700 mb-2">1. Sistemas Lineales: Error Absoluto</h3>
+                    <canvas id="chart-m2-conv" height="200"></canvas>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
+                    <h3 class="text-sm font-bold text-slate-700 mb-2">2. Raíces (Newton-Raphson): Umbral de
+                        Mantenimiento</h3>
+                    <div class="mt-4 space-y-2 text-sm">
+                        <p><strong>Condición matriz A (κ₂):</strong> <span id="m2-cond"
+                                class="text-blue-600 font-bold"></span></p>
+                        <p><strong>Ref. Analítica SPD:</strong> <span id="m2-ref"
+                                class="text-emerald-600 font-bold font-mono"></span></p>
+                        <hr class="my-3">
+                        <p><strong>Tiempo al umbral (Exacto):</strong> <span id="m2-t-ex"
+                                class="text-emerald-600 font-bold"></span> kh</p>
+                        <p><strong>Tiempo al umbral (Newton):</strong> <span id="m2-t-newton"
+                                class="text-blue-600 font-bold"></span> kh</p>
                     </div>
-                    <div class="p-3 bg-emerald-50 border-l-4 border-emerald-600 rounded">
-                        <p class="text-xs font-bold text-emerald-900">2. Conclusión del Problema (Sobre Deterioro
-                            Mecánico):</p>
-                        <p id="txt-conc-prob" class="text-xs text-slate-700 mt-1">Evalúa la estabilidad de los
-                            coeficientes estructurales de desgaste ante ruido en sensores.</p>
+                </div>
+            </div>
+            <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 overflow-x-auto">
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-slate-100 border-b border-slate-300">
+                            <th class="p-2.5">Método Numérico</th>
+                            <th class="p-2.5">Iteraciones</th>
+                            <th class="p-2.5">Vector Aproximado x̃</th>
+                            <th class="p-2.5">Error Abs. ||x*-x̃||∞</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-m2-metodos" class="divide-y divide-slate-200 font-mono text-xs"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- ================= VISTA MÓDULO 3: OSCILACIONES ================= -->
+        <section id="vista-modulo3" class="hidden space-y-6">
+            <div
+                class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
+                <div>
+                    <span class="text-xs font-bold uppercase text-amber-600">Módulo 3</span>
+                    <h2 class="text-lg font-bold">Oscilaciones por Viento (EDO y Energía Integrada)</h2>
+                </div>
+                <div class="flex items-center gap-3">
+                    <select id="select-m3" class="border border-slate-300 rounded px-3 py-1.5 text-sm">
+                        <option value="NORMAL">NORMAL (Amortiguamiento estándar)</option>
+                        <option value="ESTRES">ESTRÉS (Bajo amortiguamiento)</option>
+                        <option value="MAL_CONDICIONADO">MAL COND. (Resonancia)</option>
+                    </select>
+                    <button onclick="ejecutarM3()"
+                        class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-1.5 rounded text-sm font-semibold">Ejecutar
+                        M3</button>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
+                    <h3 class="text-sm font-bold text-slate-700 mb-2">1. Trayectoria de Oscilación (RK4)</h3>
+                    <canvas id="chart-m3-osc" height="200"></canvas>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 flex flex-col justify-center">
+                    <h3 class="text-sm font-bold text-slate-700 mb-2">2. Energía Acumulada (Simpson 1/3)</h3>
+                    <div class="text-center p-6 bg-amber-50 border border-amber-200 rounded-lg">
+                        <p class="text-sm text-slate-600 uppercase tracking-widest mb-2">Índice de Severidad Vibratoria
+                        </p>
+                        <p class="text-4xl font-bold text-amber-700"><span id="m3-energia">0.0000</span> <span
+                                class="text-xl">m²·s</span></p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- VISTA 3: DIAGRAMA ENTIDAD-RELACIÓN (DER) PARA CAPTURA DEL INFORME -->
-        <!-- VISTA 3: DIAGRAMA ENTIDAD-RELACIÓN (DER) PARA CAPTURA DEL INFORME -->
+        <!-- ================= VISTA MÓDULO 4: SENSORES ================= -->
+        <section id="vista-modulo4" class="hidden space-y-6">
+            <div
+                class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
+                <div>
+                    <span class="text-xs font-bold uppercase text-purple-600">Módulo 4</span>
+                    <h2 class="text-lg font-bold">Reconstrucción de Sensores (Interpolación)</h2>
+                </div>
+                <div class="flex items-center gap-3">
+                    <select id="select-m4" class="border border-slate-300 rounded px-3 py-1.5 text-sm">
+                        <option value="NORMAL">NORMAL (7 nodos puros)</option>
+                        <option value="ESTRES">ESTRÉS (Ruido insertado en sensores)</option>
+                        <option value="MAL_CONDICIONADO">MAL COND. (Fenómeno Runge, grado alto)</option>
+                    </select>
+                    <button onclick="ejecutarM4()"
+                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-1.5 rounded text-sm font-semibold">Ejecutar
+                        M4</button>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
+                    <h3 class="text-sm font-bold text-slate-700 mb-2">1. Curvas: Lagrange vs Splines vs Referencia</h3>
+                    <canvas id="chart-m4-curvas" height="200"></canvas>
+                </div>
+                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
+                    <h3 class="text-sm font-bold text-slate-700 mb-2">2. Error RMSE de Reconstrucción</h3>
+                    <canvas id="chart-m4-error" height="150"></canvas>
+                    <div class="mt-4 grid grid-cols-2 gap-4 text-center text-sm">
+                        <div class="p-2 bg-orange-50 border border-orange-200 rounded">
+                            <p class="text-slate-500 text-xs uppercase">Lagrange</p>
+                            <p id="m4-rmse-lag" class="font-bold text-orange-700">-</p>
+                        </div>
+                        <div class="p-2 bg-purple-50 border border-purple-200 rounded">
+                            <p class="text-slate-500 text-xs uppercase">Splines</p>
+                            <p id="m4-rmse-spl" class="font-bold text-purple-700">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= VISTA DER Y VISTA HISTORIAL ================= -->
         <section id="vista-der" class="hidden space-y-6">
             <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
                 <div class="flex justify-between items-center mb-4">
                     <div>
-                        <h2 class="text-lg font-bold text-slate-900">Modelo Entidad-Relación (DER) · Persistencia
-                            Obligatoria (6 Tablas)</h2>
-                        <p class="text-sm text-slate-600">Esquema relacional físico en SQLite
-                            (<code>simtele_risk.db</code>) con integridad referencial <code>ON DELETE CASCADE</code>.
-                        </p>
+                        <h2 class="text-lg font-bold text-slate-900">Modelo Entidad-Relación (DER) · Persistencia SQLite
+                        </h2>
+                        <p class="text-sm text-slate-600">Esquema físico en <code>simtele_risk.db</code> con integridad
+                            referencial (ON DELETE CASCADE).</p>
                     </div>
-                    <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded">Motor: SQLite3 /
-                        SQL Estándar</span>
+                    <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded">Motor:
+                        SQLite3</span>
                 </div>
-
-                <!-- Contenedor Visual del DER -->
-                <div class="bg-slate-50 p-6 rounded-lg border border-slate-200">
-
-                    <!-- Fila Superior: Flujo Principal 1:N -->
-                    <div class="grid grid-cols-1 md:grid-cols-7 gap-2 items-center">
-
-                        <!-- Tabla 1: CASO_ESTUDIO -->
-                        <div class="bg-white border-2 border-slate-800 rounded shadow-sm overflow-hidden">
-                            <div class="bg-slate-800 text-white px-3 py-1.5 text-xs font-bold uppercase tracking-wider">
-                                caso_estudio
-                            </div>
-                            <div class="p-2.5 text-xs font-mono space-y-1 divide-y divide-slate-100">
-                                <div class="flex justify-between"><span class="font-bold text-amber-600">PK
-                                        id</span><span class="text-slate-400">INTEGER</span></div>
-                                <div class="flex justify-between pt-1"><span>nombre</span><span
-                                        class="text-slate-400">TEXT</span></div>
-                                <div class="flex justify-between pt-1"><span>modelo_version</span><span
-                                        class="text-slate-400">TEXT</span></div>
+                <!-- Bloque de diseño CSS Grid para las 6 Tablas -->
+                <div class="bg-slate-50 p-6 rounded-lg border border-slate-200 overflow-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-start min-w-[800px]">
+                        <!-- Tabla 1 -->
+                        <div class="bg-white border-2 border-slate-800 rounded shadow-sm text-xs font-mono">
+                            <div class="bg-slate-800 text-white p-2 font-bold text-center">caso_estudio</div>
+                            <div class="p-2 space-y-1">
+                                <p><span class="text-amber-600">PK id</span></p>
+                                <p>nombre</p>
+                                <p>modelo_version</p>
                             </div>
                         </div>
-
-                        <!-- Conector 1:N -->
-                        <div class="flex flex-col items-center justify-center text-xs font-bold text-slate-600">
-                            <span>1 ──────&lt; N</span>
-                            <span class="text-[10px] font-normal text-slate-500">define</span>
-                        </div>
-
-                        <!-- Tabla 2: ESCENARIO -->
-                        <div class="bg-white border-2 border-blue-700 rounded shadow-sm overflow-hidden">
-                            <div class="bg-blue-700 text-white px-3 py-1.5 text-xs font-bold uppercase tracking-wider">
-                                escenario
-                            </div>
-                            <div class="p-2.5 text-xs font-mono space-y-1 divide-y divide-slate-100">
-                                <div class="flex justify-between"><span class="font-bold text-amber-600">PK
-                                        id</span><span class="text-slate-400">INTEGER</span></div>
-                                <div class="flex justify-between pt-1"><span class="font-bold text-blue-600">FK
-                                        caso_id</span><span class="text-slate-400">INTEGER</span></div>
-                                <div class="flex justify-between pt-1"><span>tipo</span><span
-                                        class="text-slate-400">VARCHAR</span></div>
-                                <div class="flex justify-between pt-1"><span>parametros_json</span><span
-                                        class="text-slate-400">JSON</span></div>
-                                <div class="flex justify-between pt-1"><span>fuente_datos</span><span
-                                        class="text-slate-400">TEXT</span></div>
+                        <!-- Tabla 2 -->
+                        <div class="bg-white border-2 border-blue-700 rounded shadow-sm text-xs font-mono">
+                            <div class="bg-blue-700 text-white p-2 font-bold text-center">escenario</div>
+                            <div class="p-2 space-y-1">
+                                <p><span class="text-amber-600">PK id</span></p>
+                                <p><span class="text-blue-600">FK caso_id</span></p>
+                                <p>tipo</p>
+                                <p>parametros_json</p>
                             </div>
                         </div>
-
-                        <!-- Conector 1:N -->
-                        <div class="flex flex-col items-center justify-center text-xs font-bold text-slate-600">
-                            <span>1 ──────&lt; N</span>
-                            <span class="text-[10px] font-normal text-slate-500">instancia</span>
-                        </div>
-
-                        <!-- Tabla 3: SIMULACION -->
-                        <div class="bg-white border-2 border-indigo-700 rounded shadow-sm overflow-hidden">
-                            <div
-                                class="bg-indigo-700 text-white px-3 py-1.5 text-xs font-bold uppercase tracking-wider">
-                                simulacion
-                            </div>
-                            <div class="p-2.5 text-xs font-mono space-y-1 divide-y divide-slate-100">
-                                <div class="flex justify-between"><span class="font-bold text-amber-600">PK
-                                        id</span><span class="text-slate-400">INTEGER</span></div>
-                                <div class="flex justify-between pt-1"><span class="font-bold text-blue-600">FK
-                                        escenario_id</span><span class="text-slate-400">INTEGER</span></div>
-                                <div class="flex justify-between pt-1"><span>fecha</span><span
-                                        class="text-slate-400">TIMESTAMP</span></div>
-                                <div class="flex justify-between pt-1"><span>usuario_equipo</span><span
-                                        class="text-slate-400">TEXT</span></div>
-                                <div class="flex justify-between pt-1"><span>estado</span><span
-                                        class="text-slate-400">VARCHAR</span></div>
+                        <!-- Tabla 3 -->
+                        <div class="bg-white border-2 border-indigo-700 rounded shadow-sm text-xs font-mono">
+                            <div class="bg-indigo-700 text-white p-2 font-bold text-center">simulacion</div>
+                            <div class="p-2 space-y-1">
+                                <p><span class="text-amber-600">PK id</span></p>
+                                <p><span class="text-blue-600">FK escenario_id</span></p>
+                                <p>fecha</p>
+                                <p>estado</p>
                             </div>
                         </div>
-
-                        <!-- Conector 1:N -->
-                        <div class="flex flex-col items-center justify-center text-xs font-bold text-slate-600">
-                            <span>1 ──────&lt; N</span>
-                            <span class="text-[10px] font-normal text-slate-500">ejecuta</span>
-                        </div>
-
-                        <!-- Tabla 4: EJECUCION_METODO -->
-                        <div class="bg-white border-2 border-emerald-700 rounded shadow-sm overflow-hidden">
-                            <div
-                                class="bg-emerald-700 text-white px-3 py-1.5 text-xs font-bold uppercase tracking-wider">
-                                ejecucion_metodo
-                            </div>
-                            <div class="p-2.5 text-xs font-mono space-y-1 divide-y divide-slate-100">
-                                <div class="flex justify-between"><span class="font-bold text-amber-600">PK
-                                        id</span><span class="text-slate-400">INTEGER</span></div>
-                                <div class="flex justify-between pt-1"><span class="font-bold text-blue-600">FK
-                                        simulacion_id</span><span class="text-slate-400">INTEGER</span></div>
-                                <div class="flex justify-between pt-1"><span>metodo</span><span
-                                        class="text-slate-400">VARCHAR</span></div>
-                                <div class="flex justify-between pt-1"><span>tolerancia</span><span
-                                        class="text-slate-400">REAL</span></div>
-                                <div class="flex justify-between pt-1"><span>paso / max_iter</span><span
-                                        class="text-slate-400">REAL/INT</span></div>
-                                <div class="flex justify-between pt-1"><span>convergio</span><span
-                                        class="text-slate-400">BOOLEAN</span></div>
-                                <div class="flex justify-between pt-1"><span>tiempo_ms</span><span
-                                        class="text-slate-400">REAL</span></div>
+                        <!-- Tabla 4 -->
+                        <div class="bg-white border-2 border-emerald-700 rounded shadow-sm text-xs font-mono">
+                            <div class="bg-emerald-700 text-white p-2 font-bold text-center">ejecucion_metodo</div>
+                            <div class="p-2 space-y-1">
+                                <p><span class="text-amber-600">PK id</span></p>
+                                <p><span class="text-blue-600">FK simulacion_id</span></p>
+                                <p>metodo</p>
+                                <p>tolerancia/paso</p>
                             </div>
                         </div>
-
                     </div>
-
-                    <!-- Conector Vertical desde EJECUCION_METODO hacia Tablas 5 y 6 -->
-                    <div
-                        class="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8 pt-6 border-t-2 border-dashed border-slate-300">
-
-                        <!-- Tabla 5: ITERACION_RESULTADO -->
-                        <div class="flex items-center gap-4">
-                            <div class="text-xs font-bold text-slate-600 text-center min-w-[95px]">
-                                <div>ejecucion_metodo</div>
-                                <div class="text-emerald-700">1 ──────&lt; N</div>
-                                <div class="text-[10px] font-normal text-slate-500">registra pasos</div>
-                            </div>
-                            <div class="flex-1 bg-white border-2 border-purple-700 rounded shadow-sm overflow-hidden">
-                                <div
-                                    class="bg-purple-700 text-white px-3 py-1.5 text-xs font-bold uppercase tracking-wider">
-                                    iteracion_resultado
-                                </div>
-                                <div class="p-2.5 text-xs font-mono grid grid-cols-2 gap-x-4 gap-y-1">
-                                    <div class="flex justify-between"><span class="font-bold text-amber-600">PK
-                                            id</span><span class="text-slate-400">INT</span></div>
-                                    <div class="flex justify-between"><span class="font-bold text-blue-600">FK
-                                            ejecucion_id</span><span class="text-slate-400">INT</span></div>
-                                    <div class="flex justify-between"><span>numero</span><span
-                                            class="text-slate-400">INT</span></div>
-                                    <div class="flex justify-between"><span>aproximacion_json</span><span
-                                            class="text-slate-400">JSON</span></div>
-                                    <div class="flex justify-between"><span>residual</span><span
-                                            class="text-slate-400">REAL</span></div>
-                                    <div class="flex justify-between"><span>error_abs / rel</span><span
-                                            class="text-slate-400">REAL</span></div>
-                                </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 max-w-xl mx-auto">
+                        <!-- Tabla 5 -->
+                        <div class="bg-white border-2 border-purple-700 rounded shadow-sm text-xs font-mono">
+                            <div class="bg-purple-700 text-white p-2 font-bold text-center">iteracion_resultado</div>
+                            <div class="p-2 space-y-1">
+                                <p><span class="text-amber-600">PK id</span></p>
+                                <p><span class="text-blue-600">FK ejecucion_id</span></p>
+                                <p>aproximacion_json</p>
                             </div>
                         </div>
-
-                        <!-- Tabla 6: RESULTADO_RESUMEN -->
-                        <div class="flex items-center gap-4">
-                            <div class="text-xs font-bold text-slate-600 text-center min-w-[95px]">
-                                <div>ejecucion_metodo</div>
-                                <div class="text-amber-700">1 ────── 1</div>
-                                <div class="text-[10px] font-normal text-slate-500">resume métricas</div>
-                            </div>
-                            <div class="flex-1 bg-white border-2 border-amber-600 rounded shadow-sm overflow-hidden">
-                                <div
-                                    class="bg-amber-600 text-white px-3 py-1.5 text-xs font-bold uppercase tracking-wider">
-                                    resultado_resumen
-                                </div>
-                                <div class="p-2.5 text-xs font-mono grid grid-cols-2 gap-x-4 gap-y-1">
-                                    <div class="flex justify-between"><span class="font-bold text-amber-600">PK
-                                            id</span><span class="text-slate-400">INT</span></div>
-                                    <div class="flex justify-between"><span class="font-bold text-blue-600">FK
-                                            ejecucion_id</span><span class="text-slate-400">UNIQUE</span></div>
-                                    <div class="flex justify-between"><span>referencia</span><span
-                                            class="text-slate-400">JSON</span></div>
-                                    <div class="flex justify-between"><span>valor_json</span><span
-                                            class="text-slate-400">JSON</span></div>
-                                    <div class="flex justify-between"><span>metrica_error_json</span><span
-                                            class="text-slate-400">JSON</span></div>
-                                    <div class="flex justify-between"><span>interpretacion</span><span
-                                            class="text-slate-400">TEXT</span></div>
-                                </div>
+                        <!-- Tabla 6 -->
+                        <div class="bg-white border-2 border-amber-600 rounded shadow-sm text-xs font-mono">
+                            <div class="bg-amber-600 text-white p-2 font-bold text-center">resultado_resumen</div>
+                            <div class="p-2 space-y-1">
+                                <p><span class="text-amber-600">PK id</span></p>
+                                <p><span class="text-blue-600">FK ejecucion_id</span></p>
+                                <p>metrica_error_json</p>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- VISTA 4: HISTORIAL PERSISTENTE EN BASE DE DATOS -->
         <section id="vista-historial" class="hidden space-y-6">
             <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
                 <h2 class="text-lg font-bold text-slate-900 mb-2">Historial Persistente de Simulaciones (SQLite)</h2>
-                <p class="text-sm text-slate-600 mb-4">Registros recuperados directamente de la base de datos física
-                    <code>simtele_risk.db</code>.
-                </p>
                 <table class="w-full text-left border-collapse text-sm">
                     <thead>
                         <tr class="bg-slate-100 border-b border-slate-300">
                             <th class="p-2.5">ID Simulación</th>
                             <th class="p-2.5">Fecha y Hora</th>
                             <th class="p-2.5">Escenario</th>
-                            <th class="p-2.5">Parámetros Guardados (JSON)</th>
-                            <th class="p-2.5">Métodos Ejecutados</th>
-                            <th class="p-2.5">Acción</th>
+                            <th class="p-2.5">Módulo de Estudio</th>
                         </tr>
                     </thead>
-                    <tbody id="tabla-historial" class="divide-y divide-slate-200 text-xs font-mono"></tbody>
+                    <tbody id="tabla-historial" class="divide-y divide-slate-200 text-xs"></tbody>
                 </table>
             </div>
         </section>
 
     </main>
 
+    <!-- ================= LÓGICA JAVASCRIPT (CON RESPALDO LOCAL Y GITHUB PAGES) ================= -->
     <script>
-        let chartInstance = null;
+        let chartM1_EDO, chartM1_Raiz;
+        let chartM2_Conv;
+        let chartM3_Osc;
+        let chartM4_Curvas, chartM4_Error;
 
-        const INITIAL_HISTORIAL = [
-            { sim_id: 12, fecha: "2026-11-10 04:43:21", usuario_equipo: "Grupo Paralelo A - UMSA", tipo: "MAL_CONDICIONADO", parametros_json: '{"condicion_A": 7627.3346, "tolerancia": 1e-06, "b": [1.9167666666666667, 1.1168666666666667, 0.7998999999999999, 0.6262904761904763]}', num_metodos: 4 },
-            { sim_id: 11, fecha: "2026-11-10 04:34:01", usuario_equipo: "Grupo Paralelo A - UMSA", tipo: "ESTRES", parametros_json: '{"condicion_A": 2.3597, "tolerancia": 1e-10, "b": [6.05, 24.95, -10.95, 14.95]}', num_metodos: 4 },
-            { sim_id: 10, fecha: "2026-11-10 04:32:51", usuario_equipo: "Grupo Paralelo A - UMSA", tipo: "NORMAL", parametros_json: '{"condicion_A": 2.3597, "tolerancia": 1e-06, "b": [6.0, 25.0, -11.0, 15.0]}', num_metodos: 4 },
-            { sim_id: 9, fecha: "2026-11-10 04:32:47", usuario_equipo: "Grupo Paralelo A - UMSA", tipo: "ESTRES", parametros_json: '{"condicion_A": 2.3597, "tolerancia": 1e-10, "b": [6.05, 24.95, -10.95, 14.95]}', num_metodos: 4 },
-            { sim_id: 8, fecha: "2026-11-10 04:31:05", usuario_equipo: "Grupo Paralelo A - UMSA", tipo: "NORMAL", parametros_json: '{"condicion_A": 2.3597, "tolerancia": 1e-06, "b": [6.0, 25.0, -11.0, 15.0]}', num_metodos: 4 },
-            { sim_id: 7, fecha: "2026-11-10 03:51:52", usuario_equipo: "Grupo Paralelo A - UMSA", tipo: "MAL_CONDICIONADO", parametros_json: '{"condicion_A": 7627.3346, "tolerancia": 1e-06, "b": [1.9167666666666667, 1.1168666666666667, 0.7998999999999999, 0.6262904761904763]}', num_metodos: 4 },
-            { sim_id: 6, fecha: "2026-11-10 03:50:28", usuario_equipo: "Grupo Paralelo A - UMSA", tipo: "ESTRES", parametros_json: '{"condicion_A": 2.3597, "tolerancia": 1e-10, "b": [6.05, 24.95, -10.95, 14.95]}', num_metodos: 4 },
-            { sim_id: 5, fecha: "2026-11-10 03:50:08", usuario_equipo: "Grupo Paralelo A - UMSA", tipo: "NORMAL", parametros_json: '{"condicion_A": 2.3597, "tolerancia": 1e-06, "b": [6.0, 25.0, -11.0, 15.0]}', num_metodos: 4 }
+        const HISTORIAL_INICIAL = [
+            { sim_id: 12, fecha: "2026-11-10 04:43:21", tipo: "MAL_CONDICIONADO", caso: "Módulo 2: Deterioro mecánico y mantenimiento" },
+            { sim_id: 11, fecha: "2026-11-10 04:34:01", tipo: "ESTRES", caso: "Módulo 2: Deterioro mecánico y mantenimiento" },
+            { sim_id: 10, fecha: "2026-11-10 04:32:51", tipo: "NORMAL", caso: "Módulo 2: Deterioro mecánico y mantenimiento" }
         ];
 
-        function normInf(vec) {
-            return Math.max(...vec.map(v => Math.abs(v)));
+        function registrarHistorialLocal(tipo, casoNombre) {
+            const lista = JSON.parse(localStorage.getItem("simtele_hist_v2") || JSON.stringify(HISTORIAL_INICIAL));
+            const nextId = (lista[0]?.sim_id || 12) + 1;
+            const fecha = new Date().toISOString().replace("T", " ").substring(0, 19);
+            lista.unshift({ sim_id: nextId, fecha, tipo, caso: casoNombre });
+            localStorage.setItem("simtele_hist_v2", JSON.stringify(lista.slice(0, 15)));
         }
 
-        function matVec(A, x) {
-            return A.map(row => row.reduce((acc, val, j) => acc + val * x[j], 0));
+        // --- MOTORES NUMÉRICOS EN JS (RESPALDO PARA GITHUB PAGES / ARCHIVO LOCAL) ---
+        function rk4JS(f, t0, y0, h, nSteps) {
+            const historial = [];
+            let t = t0;
+            let y = [...y0];
+            for (let k = 0; k <= nSteps; k++) {
+                historial.push({ iter: k, t: Number(t.toFixed(4)), y: y.map(v => Number(v.toFixed(6))) });
+                if (k === nSteps) break;
+                const k1 = f(t, y);
+                const k2 = f(t + h / 2, y.map((v, i) => v + (h / 2) * k1[i]));
+                const k3 = f(t + h / 2, y.map((v, i) => v + (h / 2) * k2[i]));
+                const k4 = f(t + h, y.map((v, i) => v + h * k3[i]));
+                y = y.map((v, i) => v + (h / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]));
+                t += h;
+            }
+            return historial;
         }
 
-        function vecSub(a, b) {
-            return a.map((v, i) => v - b[i]);
+        function biseccionJS(f, a, b, xRef, tol = 1e-6, maxIter = 100) {
+            const historial = [];
+            let xMid = a;
+            for (let k = 1; k <= maxIter; k++) {
+                xMid = (a + b) / 2.0;
+                const res = Math.abs(f(xMid));
+                const errAbs = Math.abs(xMid - xRef);
+                historial.push({ iter: k, x: Number(xMid.toFixed(6)), residual: res, error_abs: errAbs });
+                if (res < tol || Math.abs(b - a) / 2.0 < tol) break;
+                if (f(a) * f(xMid) < 0) b = xMid;
+                else a = xMid;
+            }
+            return { resultado: xMid, historial };
         }
 
-        function dot(a, b) {
-            return a.reduce((acc, v, i) => acc + v * b[i], 0);
+        function simpson13JS(f, a, b, n) {
+            if (n % 2 !== 0) n += 1;
+            const h = (b - a) / n;
+            let impares = 0, pares = 0;
+            for (let i = 1; i < n; i += 2) impares += f(a + i * h);
+            for (let i = 2; i < n; i += 2) pares += f(a + i * h);
+            return (h / 3.0) * (f(a) + 4 * impares + 2 * pares + f(b));
         }
 
-        function calcularErrores(xAprox, xRef, A, b) {
-            const errAbs = normInf(vecSub(xAprox, xRef));
-            const normRef = Math.max(normInf(xRef), 1e-14);
-            const errRel = errAbs / normRef;
-            const errPct = errRel * 100.0;
-            const residual = normInf(vecSub(matVec(A, xAprox), b));
-            return { errAbs, errRel, errPct, residual };
+        function simularM1Local(tipo) {
+            let v0 = 6.0, a0 = 1.5, h = 0.1;
+            if (tipo === "ESTRES") { v0 = 8.5; a0 = 0.75; h = 0.5; }
+            else if (tipo === "MAL_CONDICIONADO") { v0 = 6.0; a0 = 1.5; h = 0.25; }
+            const tDetEx = v0 / a0;
+            const dFrenadoEx = (v0 * v0) / (2 * a0);
+            const histRk4 = rk4JS(() => [-a0], 0.0, [v0], h, Math.floor(tDetEx / h) + 2);
+            const fRaiz = (t) => tipo !== "MAL_CONDICIONADO" ? (v0 - a0 * t) : (v0 - a0 * t) * Math.abs(v0 - a0 * t);
+            const bisec = biseccionJS(fRaiz, 0.0, tDetEx + 2.3, tDetEx);
+            const dAprox = simpson13JS((t) => Math.max(0.0, v0 - a0 * t), 0.0, tDetEx, 40);
+            registrarHistorialLocal(tipo, "Módulo 1: Detención de emergencia de cabinas");
+            return {
+                escenario: tipo,
+                referencia: { t_det: tDetEx, d_frenado: dFrenadoEx },
+                edo_rk4: { historial: histRk4 },
+                raiz_bisec: bisec,
+                int_simpson: { resultado: dAprox }
+            };
         }
+
+        function normInf(v) { return Math.max(...v.map(x => Math.abs(x))); }
+        function matVec(A, x) { return A.map(row => row.reduce((s, val, j) => s + val * x[j], 0)); }
+        function vecSub(a, b) { return a.map((v, i) => v - b[i]); }
+        function dot(a, b) { return a.reduce((s, v, i) => s + v * b[i], 0); }
 
         function solveLUJS(A, b, xRef) {
-            const t0 = performance.now();
             const n = b.length;
-            const L = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (__, j) => (i === j ? 1 : 0)));
-            const U = A.map(row => [...row]);
+            const L = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (__, j) => i === j ? 1 : 0));
+            const U = A.map(r => [...r]);
             for (let i = 0; i < n; i++) {
                 for (let j = i + 1; j < n; j++) {
-                    const factor = U[j][i] / U[i][i];
-                    L[j][i] = factor;
-                    for (let k = i; k < n; k++) U[j][k] -= factor * U[i][k];
+                    const f = U[j][i] / U[i][i];
+                    L[j][i] = f;
+                    for (let k = i; k < n; k++) U[j][k] -= f * U[i][k];
                 }
             }
             const y = new Array(n).fill(0);
@@ -491,311 +489,321 @@
                 for (let k = i + 1; k < n; k++) s += U[i][k] * x[k];
                 x[i] = (y[i] - s) / U[i][i];
             }
-            const tMs = performance.now() - t0;
-            const { errAbs, errRel, residual } = calcularErrores(x, xRef, A, b);
-            const historial = [{
-                iter: 1,
-                x: x.map(v => Number(v.toFixed(6))),
-                residual,
-                error_abs: errAbs,
-                error_rel: errRel
-            }];
-            return { x, historial, convergio: true, tMs };
+            const errAbs = normInf(vecSub(x, xRef));
+            return { solucion: x.map(v => Number(v.toFixed(6))), error_abs: errAbs, historial: [{ iter: 1, error_abs: errAbs }], iteraciones_totales: 1 };
         }
 
-        function solveJacobiJS(A, b, xRef, tol = 1e-6, maxIter = 500) {
-            const t0 = performance.now();
-            const n = b.length;
-            let x = new Array(n).fill(0);
-            const historial = [];
-            let convergio = false;
+        function simularM2Local(tipo) {
+            let A = [[10, -1, 2, 0], [-1, 11, -1, 3], [2, -1, 10, -1], [0, 3, -1, 8]];
+            let xEx = [1, 2, -1, 1];
+            let b = matVec(A, xEx);
+            let tol = tipo === "ESTRES" ? 1e-10 : 1e-6;
+            let cond = 2.36;
+            if (tipo === "ESTRES") {
+                const db = [0.05, -0.05, 0.05, -0.05];
+                b = b.map((v, i) => v + db[i]);
+                xEx = solveLUJS(A, b, xEx).solucion;
+            } else if (tipo === "MAL_CONDICIONADO") {
+                A = Array.from({ length: 4 }, (_, i) => Array.from({ length: 4 }, (__, j) => 1 / (i + j + 1) + (i === j ? 1e-4 : 0)));
+                b = matVec(A, xEx);
+                cond = 7627.33;
+            }
+            const n = 4, maxIter = 500;
+            // Jacobi
+            let xJ = [0, 0, 0, 0], histJ = [];
             for (let k = 1; k <= maxIter; k++) {
-                const xNew = new Array(n).fill(0);
+                const xNew = [0, 0, 0, 0];
                 for (let i = 0; i < n; i++) {
                     let s = 0;
-                    for (let j = 0; j < n; j++) if (j !== i) s += A[i][j] * x[j];
+                    for (let j = 0; j < n; j++) if (j !== i) s += A[i][j] * xJ[j];
                     xNew[i] = (b[i] - s) / A[i][i];
                 }
-                const { errAbs, errRel, residual } = calcularErrores(xNew, xRef, A, b);
-                historial.push({
-                    iter: k,
-                    x: xNew.map(v => Number(v.toFixed(6))),
-                    residual,
-                    error_abs: errAbs,
-                    error_rel: errRel
-                });
-                if (normInf(vecSub(xNew, x)) < tol) {
-                    convergio = true;
-                    x = xNew;
-                    break;
-                }
-                x = xNew;
-                if (errAbs > 1e100) break;
+                const err = normInf(vecSub(xNew, xEx));
+                histJ.push({ iter: k, error_abs: err });
+                if (normInf(vecSub(xNew, xJ)) < tol || err > 1e100) { xJ = xNew; break; }
+                xJ = xNew;
             }
-            return { x, historial, convergio, tMs: performance.now() - t0 };
-        }
-
-        function solveGaussSeidelJS(A, b, xRef, tol = 1e-6, maxIter = 500) {
-            const t0 = performance.now();
-            const n = b.length;
-            const x = new Array(n).fill(0);
-            const historial = [];
-            let convergio = false;
+            // Gauss-Seidel
+            let xGS = [0, 0, 0, 0], histGS = [];
             for (let k = 1; k <= maxIter; k++) {
-                const xOld = [...x];
+                const xOld = [...xGS];
                 for (let i = 0; i < n; i++) {
                     let s1 = 0, s2 = 0;
-                    for (let j = 0; j < i; j++) s1 += A[i][j] * x[j];
+                    for (let j = 0; j < i; j++) s1 += A[i][j] * xGS[j];
                     for (let j = i + 1; j < n; j++) s2 += A[i][j] * xOld[j];
-                    x[i] = (b[i] - s1 - s2) / A[i][i];
+                    xGS[i] = (b[i] - s1 - s2) / A[i][i];
                 }
-                const { errAbs, errRel, residual } = calcularErrores(x, xRef, A, b);
-                historial.push({
-                    iter: k,
-                    x: x.map(v => Number(v.toFixed(6))),
-                    residual,
-                    error_abs: errAbs,
-                    error_rel: errRel
-                });
-                if (normInf(vecSub(x, xOld)) < tol) {
-                    convergio = true;
-                    break;
-                }
+                const err = normInf(vecSub(xGS, xEx));
+                histGS.push({ iter: k, error_abs: err });
+                if (normInf(vecSub(xGS, xOld)) < tol) break;
             }
-            return { x, historial, convergio, tMs: performance.now() - t0 };
-        }
-
-        function solveCGJS(A, b, xRef, tol = 1e-6, maxIter = 500) {
-            const t0 = performance.now();
-            let x = new Array(b.length).fill(0);
-            let r = vecSub(b, matVec(A, x));
-            let p = [...r];
-            let rsOld = dot(r, r);
-            const historial = [];
-            let convergio = false;
+            // Gradiente Conjugado
+            let xCG = [0, 0, 0, 0], r = vecSub(b, matVec(A, xCG)), p = [...r], rsOld = dot(r, r), histCG = [];
             for (let k = 1; k <= maxIter; k++) {
                 const Ap = matVec(A, p);
                 const alpha = rsOld / dot(p, Ap);
-                x = x.map((v, i) => v + alpha * p[i]);
+                xCG = xCG.map((v, i) => v + alpha * p[i]);
                 r = r.map((v, i) => v - alpha * Ap[i]);
                 const rsNew = dot(r, r);
-                const { errAbs, errRel, residual } = calcularErrores(x, xRef, A, b);
-                historial.push({
-                    iter: k,
-                    x: x.map(v => Number(v.toFixed(6))),
-                    residual,
-                    error_abs: errAbs,
-                    error_rel: errRel
-                });
-                if (Math.sqrt(rsNew) < tol) {
-                    convergio = true;
-                    break;
-                }
+                const err = normInf(vecSub(xCG, xEx));
+                histCG.push({ iter: k, error_abs: err });
+                if (Math.sqrt(rsNew) < tol) break;
                 p = r.map((v, i) => v + (rsNew / rsOld) * p[i]);
                 rsOld = rsNew;
             }
-            return { x, historial, convergio, tMs: performance.now() - t0 };
-        }
-
-        function simularLocalmente(tipo) {
-            const A_base = [
-                [10.0, -1.0,  2.0,  0.0],
-                [-1.0, 11.0, -1.0,  3.0],
-                [ 2.0, -1.0, 10.0, -1.0],
-                [ 0.0,  3.0, -1.0,  8.0]
-            ];
-            const x_exact_base = [1.0, 2.0, -1.0, 1.0];
-            const b_base = matVec(A_base, x_exact_base);
-            let A, b, xRef, tol, condA;
-            if (tipo === "NORMAL") {
-                A = A_base; b = b_base; xRef = x_exact_base; tol = 1e-6; condA = 2.3597;
-            } else if (tipo === "ESTRES") {
-                const delta_b = [0.05, -0.05, 0.05, -0.05];
-                A = A_base;
-                b = b_base.map((v, i) => v + delta_b[i]);
-                xRef = solveLUJS(A, b, x_exact_base).x;
-                tol = 1e-10; condA = 2.3597;
-            } else {
-                A = Array.from({ length: 4 }, (_, i) =>
-                    Array.from({ length: 4 }, (__, j) => 1.0 / (i + j + 1) + (i === j ? 1e-4 : 0.0))
-                );
-                b = matVec(A, x_exact_base);
-                xRef = x_exact_base; tol = 1e-6; condA = 7627.3346;
+            const luRes = solveLUJS(A, b, xEx);
+            // Newton-Raphson D(t)
+            const D0 = 10.0, alpha = 3.5, beta = 0.75, Dumbral = 75.0;
+            const tExRaiz = (-alpha + Math.sqrt(alpha * alpha - 4 * beta * (D0 - Dumbral))) / (2 * beta);
+            let tN = 1.0;
+            for (let k = 1; k <= 100; k++) {
+                const f = D0 + alpha * tN + beta * tN * tN - Dumbral;
+                const df = alpha + 2 * beta * tN;
+                const tNext = tN - f / df;
+                if (Math.abs(tNext - tN) < 1e-6) { tN = tNext; break; }
+                tN = tNext;
             }
-            const maxIter = 500;
-            const metodos = {};
-            const definiciones = [
-                ["Jacobi", () => solveJacobiJS(A, b, xRef, tol, maxIter)],
-                ["Gauss-Seidel", () => solveGaussSeidelJS(A, b, xRef, tol, maxIter)],
-                ["Gradiente Conjugado", () => solveCGJS(A, b, xRef, tol, maxIter)],
-                ["Factorización LU", () => solveLUJS(A, b, xRef)]
-            ];
-            for (const [nombre, fn] of definiciones) {
-                const { x, historial, convergio, tMs } = fn();
-                const { errAbs, errRel, errPct, residual } = calcularErrores(x, xRef, A, b);
-                metodos[nombre] = {
-                    solucion: x.map(v => Number(v.toFixed(6))),
-                    iteraciones_totales: historial.length,
-                    convergio,
-                    tiempo_ms: Number(tMs.toFixed(4)),
-                    error_abs: errAbs,
-                    error_rel: errRel,
-                    error_pct: errPct,
-                    residual,
-                    historial: historial.slice(0, 15)
-                };
-            }
-            const histGuardado = JSON.parse(localStorage.getItem("simtele_historial") || JSON.stringify(INITIAL_HISTORIAL));
-            const nextId = (histGuardado[0]?.sim_id || 12) + 1;
-            const fechaActual = new Date().toISOString().replace("T", " ").substring(0, 19);
-            histGuardado.unshift({
-                sim_id: nextId,
-                fecha: fechaActual,
-                usuario_equipo: "Grupo Paralelo A - UMSA",
-                tipo,
-                parametros_json: JSON.stringify({ condicion_A: condA, tolerancia: tol, b: b.map(v => Number(v.toFixed(6))) }),
-                num_metodos: 4
-            });
-            localStorage.setItem("simtele_historial", JSON.stringify(histGuardado.slice(0, 15)));
+            registrarHistorialLocal(tipo, "Módulo 2: Deterioro mecánico y mantenimiento");
             return {
-                simulacion_id: nextId,
                 escenario: tipo,
-                condicion: condA,
-                tolerancia: tol,
-                referencia: xRef.map(v => Number(v.toFixed(6))),
-                metodos
+                condicion: cond,
+                referencia: xEx.map(v => Number(v.toFixed(4))),
+                metodos: {
+                    "Jacobi": { solucion: xJ.map(v => Number(v.toFixed(6))), error_abs: histJ[histJ.length - 1].error_abs, historial: histJ.slice(0, 25), iteraciones_totales: histJ.length },
+                    "Gauss-Seidel": { solucion: xGS.map(v => Number(v.toFixed(6))), error_abs: histGS[histGS.length - 1].error_abs, historial: histGS.slice(0, 25), iteraciones_totales: histGS.length },
+                    "Gradiente Conjugado": { solucion: xCG.map(v => Number(v.toFixed(6))), error_abs: histCG[histCG.length - 1].error_abs, historial: histCG.slice(0, 25), iteraciones_totales: histCG.length },
+                    "Factorización LU": luRes
+                },
+                raiz_newton: { resultado: tN, exacto: tExRaiz }
             };
         }
 
+        function simularM3Local(tipo) {
+            const m = 800.0, k = 1280.0;
+            let c = 320.0;
+            if (tipo === "ESTRES") c = 80.0;
+            else if (tipo === "MAL_CONDICIONADO") c = 16.0;
+            const w0 = Math.sqrt(k / m), zeta = c / (2 * Math.sqrt(m * k)), wd = w0 * Math.sqrt(1 - zeta * zeta);
+            const xEx = (t) => Math.exp(-zeta * w0 * t) * (0.35 * Math.cos(wd * t) + (zeta * w0 * 0.35) / wd * Math.sin(wd * t));
+            const histRk4 = rk4JS((t, y) => [y[1], (-c * y[1] - k * y[0]) / m], 0.0, [0.35, 0.0], 0.05, 100);
+            const energia = simpson13JS((t) => { const v = xEx(t); return v * v; }, 0.0, 5.0, 40);
+            registrarHistorialLocal(tipo, "Módulo 3: Oscilaciones por viento");
+            return { escenario: tipo, edo_rk4: { historial: histRk4 }, energia };
+        }
+
+        function lagrangeJS(xNodes, yNodes, xEval) {
+            let yEval = 0.0;
+            for (let i = 0; i < xNodes.length; i++) {
+                let Li = 1.0;
+                for (let j = 0; j < xNodes.length; j++) {
+                    if (i !== j) Li *= (xEval - xNodes[j]) / (xNodes[i] - xNodes[j]);
+                }
+                yEval += yNodes[i] * Li;
+            }
+            return yEval;
+        }
+
+        function splinesCubicosJS(xNodes, yNodes, xEval) {
+            const n = xNodes.length - 1;
+            const h = [];
+            for (let i = 0; i < n; i++) h.push(xNodes[i + 1] - xNodes[i]);
+            const alpha = new Array(n).fill(0);
+            for (let i = 1; i < n; i++) {
+                alpha[i] = (3 / h[i]) * (yNodes[i + 1] - yNodes[i]) - (3 / h[i - 1]) * (yNodes[i] - yNodes[i - 1]);
+            }
+            const l = new Array(n + 1).fill(1), mu = new Array(n + 1).fill(0), z = new Array(n + 1).fill(0);
+            for (let i = 1; i < n; i++) {
+                l[i] = 2 * (xNodes[i + 1] - xNodes[i - 1]) - h[i - 1] * mu[i - 1];
+                mu[i] = h[i] / l[i];
+                z[i] = (alpha[i] - h[i - 1] * z[i - 1]) / l[i];
+            }
+            const c = new Array(n + 1).fill(0), b = new Array(n).fill(0), d = new Array(n).fill(0);
+            for (let j = n - 1; j >= 0; j--) {
+                c[j] = z[j] - mu[j] * c[j + 1];
+                b[j] = (yNodes[j + 1] - yNodes[j]) / h[j] - h[j] * (c[j + 1] + 2 * c[j]) / 3;
+                d[j] = (c[j + 1] - c[j]) / (3 * h[j]);
+            }
+            for (let i = 0; i < n; i++) {
+                if ((xEval >= xNodes[i] && xEval <= xNodes[i + 1]) || i === n - 1) {
+                    const dx = xEval - xNodes[i];
+                    return yNodes[i] + b[i] * dx + c[i] * dx * dx + d[i] * dx * dx * dx;
+                }
+            }
+            return yNodes[n];
+        }
+
+        function simularM4Local(tipo) {
+            const numNodos = tipo !== "MAL_CONDICIONADO" ? 7 : 13;
+            const xNodes = Array.from({ length: numNodos }, (_, i) => (6.0 * i) / (numNodos - 1));
+            const yExact = (t) => Math.exp(-0.2 * t) * Math.sin(t) + 2.0;
+            const ruidoDeterminista = [0.015, -0.052, 0.038, 0.047, -0.098, -0.065, 0.006, -0.016, -0.001, -0.043, 0.044, 0.039, 0.003];
+            const yNodes = xNodes.map((x, idx) => yExact(x) + (tipo === "ESTRES" ? ruidoDeterminista[idx % ruidoDeterminista.length] : 0));
+            const xEval = Array.from({ length: 49 }, (_, i) => (6.0 * i) / 48);
+            const yRef = xEval.map(yExact);
+            const yLag = xEval.map(x => lagrangeJS(xNodes, yNodes, x));
+            const ySpl = xEval.map(x => splinesCubicosJS(xNodes, yNodes, x));
+            const rmseLag = Math.sqrt(yLag.reduce((s, v, i) => s + Math.pow(v - yRef[i], 2), 0) / xEval.length);
+            const rmseSpl = Math.sqrt(ySpl.reduce((s, v, i) => s + Math.pow(v - yRef[i], 2), 0) / xEval.length);
+            registrarHistorialLocal(tipo, "Módulo 4: Reconstrucción de señales de sensores");
+            return {
+                escenario: tipo,
+                nodos: { x: xNodes, y: yNodes },
+                curvas: { x: xEval, ref: yRef, lag: yLag, spl: ySpl },
+                errores: { lag: rmseLag, spl: rmseSpl }
+            };
+        }
+
+        // --- CONTROL DE VISTAS Y EJECUCIÓN ---
         function mostrarVista(vista) {
-            ['inicio', 'simulador', 'der', 'historial'].forEach(v => {
+            ['inicio', 'modulo1', 'modulo2', 'modulo3', 'modulo4', 'der', 'historial'].forEach(v => {
                 document.getElementById('vista-' + v).classList.add('hidden');
             });
             document.getElementById('vista-' + vista).classList.remove('hidden');
         }
 
-        async function ejecutarSimulacion(escenarioForzado = null) {
-            const select = document.getElementById('select-escenario');
-            const escenario = escenarioForzado || select.value;
-            if (escenarioForzado) select.value = escenarioForzado;
-
+        async function ejecutarM1(forzado = null) {
+            const esc = forzado || document.getElementById('select-m1').value;
+            if (forzado) document.getElementById('select-m1').value = esc;
             let data;
             try {
-                const res = await fetch('/api/ejecutar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ escenario })
-                });
-                if (!res.ok) throw new Error('Modo estático GitHub Pages');
+                const res = await fetch('/api/ejecutar_m1', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ escenario: esc }) });
+                if (!res.ok) throw new Error('Fallback local');
                 data = await res.json();
             } catch (e) {
-                data = simularLocalmente(escenario);
+                data = simularM1Local(esc);
             }
 
-            document.getElementById('lbl-escenario').textContent = data.escenario;
-            document.getElementById('lbl-condicion').textContent = data.condicion;
-            document.getElementById('lbl-tol').textContent = data.tolerancia.toExponential(1);
-            document.getElementById('lbl-ref').textContent = '[' + data.referencia.join(', ') + ']';
+            document.getElementById('m1-t-ex').innerText = data.referencia.t_det.toFixed(4);
+            document.getElementById('m1-t-num').innerText = data.raiz_bisec.resultado.toFixed(4);
+            document.getElementById('m1-d-ex').innerText = data.referencia.d_frenado.toFixed(4);
+            document.getElementById('m1-d-num').innerText = data.int_simpson.resultado.toFixed(4);
 
-            const tbody = document.getElementById('tabla-metodos');
-            tbody.innerHTML = '';
-
-            const datasets = [];
-            const colores = {
-                'Jacobi': '#ef4444',
-                'Gauss-Seidel': '#f59e0b',
-                'Gradiente Conjugado': '#2563eb',
-                'Factorización LU': '#10b981'
-            };
-
-            for (const [nombre, info] of Object.entries(data.metodos)) {
-                const badge = info.convergio
-                    ? '<span class="px-2 py-0.5 bg-green-100 text-green-800 rounded font-sans font-semibold">Convergió</span>'
-                    : '<span class="px-2 py-0.5 bg-red-100 text-red-800 rounded font-sans font-semibold">No convergió</span>';
-
-                tbody.innerHTML += `
-          <tr>
-            <td class="p-2.5 font-sans font-bold">${nombre}</td>
-            <td class="p-2.5">${info.iteraciones_totales}</td>
-            <td class="p-2.5">${badge}</td>
-            <td class="p-2.5">[${info.solucion.join(', ')}]</td>
-            <td class="p-2.5">${info.residual.toExponential(4)}</td>
-            <td class="p-2.5">${info.error_abs.toExponential(4)}</td>
-            <td class="p-2.5">${info.error_pct.toExponential(4)} %</td>
-          </tr>
-        `;
-
-                datasets.push({
-                    label: nombre,
-                    data: info.historial.map(h => ({ x: h.iter, y: Math.log10(Math.max(h.error_abs, 1e-16)) })),
-                    borderColor: colores[nombre],
-                    backgroundColor: colores[nombre],
-                    tension: 0.2,
-                    fill: false
-                });
-            }
-
-            if (chartInstance) chartInstance.destroy();
-            const ctx = document.getElementById('chart-convergencia').getContext('2d');
-            chartInstance = new Chart(ctx, {
+            if (chartM1_EDO) chartM1_EDO.destroy();
+            chartM1_EDO = new Chart(document.getElementById('chart-m1-edo').getContext('2d'), {
                 type: 'line',
-                data: { datasets },
-                options: {
-                    parsing: false,
-                    scales: {
-                        x: { type: 'linear', title: { display: true, text: 'Iteración (k)' } },
-                        y: { title: { display: true, text: 'log10(Error Absoluto)' } }
-                    }
+                data: { labels: data.edo_rk4.historial.map(h => h.t), datasets: [{ label: 'v(t) RK4', data: data.edo_rk4.historial.map(h => h.y[0]), borderColor: '#dc2626', pointRadius: 2 }] }
+            });
+
+            if (chartM1_Raiz) chartM1_Raiz.destroy();
+            chartM1_Raiz = new Chart(document.getElementById('chart-m1-raiz').getContext('2d'), {
+                type: 'line',
+                data: { labels: data.raiz_bisec.historial.map(h => h.iter), datasets: [{ label: 'Log10 Err', data: data.raiz_bisec.historial.map(h => Math.log10(Math.max(h.error_abs, 1e-12))), borderColor: '#2563eb' }] }
+            });
+        }
+
+        async function ejecutarM2(forzado = null) {
+            const esc = forzado || document.getElementById('select-m2').value;
+            if (forzado) document.getElementById('select-m2').value = esc;
+            let data;
+            try {
+                const res = await fetch('/api/ejecutar_m2', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ escenario: esc }) });
+                if (!res.ok) throw new Error('Fallback local');
+                data = await res.json();
+            } catch (e) {
+                data = simularM2Local(esc);
+            }
+
+            document.getElementById('m2-cond').innerText = data.condicion;
+            document.getElementById('m2-ref').innerText = '[' + data.referencia.join(', ') + ']';
+            document.getElementById('m2-t-ex').innerText = data.raiz_newton.exacto.toFixed(4);
+            document.getElementById('m2-t-newton').innerText = data.raiz_newton.resultado.toFixed(4);
+
+            const tbody = document.getElementById('tabla-m2-metodos');
+            tbody.innerHTML = '';
+            const datasets = [];
+            const colores = { 'Jacobi': '#ef4444', 'Gauss-Seidel': '#f59e0b', 'Gradiente Conjugado': '#2563eb', 'Factorización LU': '#10b981' };
+
+            for (const [nom, inf] of Object.entries(data.metodos)) {
+                tbody.innerHTML += `<tr><td class="p-2.5 font-bold">${nom}</td><td class="p-2.5">${inf.iteraciones_totales}</td><td class="p-2.5">[${inf.solucion.join(', ')}]</td><td class="p-2.5">${inf.error_abs.toExponential(4)}</td></tr>`;
+                datasets.push({ label: nom, data: inf.historial.map(h => ({ x: h.iter, y: Math.log10(Math.max(h.error_abs, 1e-16)) })), borderColor: colores[nom] || '#64748b', fill: false });
+            }
+
+            if (chartM2_Conv) chartM2_Conv.destroy();
+            chartM2_Conv = new Chart(document.getElementById('chart-m2-conv').getContext('2d'), {
+                type: 'line', data: { datasets }, options: { parsing: false, scales: { x: { type: 'linear', title: { display: true, text: 'Iteración' } }, y: { title: { display: true, text: 'Log10(Error Abs.)' } } } }
+            });
+        }
+
+        async function ejecutarM3(forzado = null) {
+            const esc = forzado || document.getElementById('select-m3').value;
+            if (forzado) document.getElementById('select-m3').value = esc;
+            let data;
+            try {
+                const res = await fetch('/api/ejecutar_m3', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ escenario: esc }) });
+                if (!res.ok) throw new Error('Fallback local');
+                data = await res.json();
+            } catch (e) {
+                data = simularM3Local(esc);
+            }
+
+            document.getElementById('m3-energia').innerText = data.energia.toFixed(4);
+
+            if (chartM3_Osc) chartM3_Osc.destroy();
+            chartM3_Osc = new Chart(document.getElementById('chart-m3-osc').getContext('2d'), {
+                type: 'line',
+                data: { labels: data.edo_rk4.historial.map(h => h.t), datasets: [{ label: 'x(t) Oscilación RK4', data: data.edo_rk4.historial.map(h => h.y[0]), borderColor: '#d97706', pointRadius: 0 }] }
+            });
+        }
+
+        async function ejecutarM4(forzado = null) {
+            const esc = forzado || document.getElementById('select-m4').value;
+            if (forzado) document.getElementById('select-m4').value = esc;
+            let data;
+            try {
+                const res = await fetch('/api/ejecutar_m4', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ escenario: esc }) });
+                if (!res.ok) throw new Error('Fallback local');
+                data = await res.json();
+            } catch (e) {
+                data = simularM4Local(esc);
+            }
+
+            document.getElementById('m4-rmse-lag').innerText = data.errores.lag.toExponential(4);
+            document.getElementById('m4-rmse-spl').innerText = data.errores.spl.toExponential(4);
+
+            const nodosData = data.curvas.x.map(x => {
+                const idx = data.nodos.x.findIndex(nx => Math.abs(nx - x) < 1e-6);
+                return idx !== -1 ? data.nodos.y[idx] : null;
+            });
+
+            if (chartM4_Curvas) chartM4_Curvas.destroy();
+            chartM4_Curvas = new Chart(document.getElementById('chart-m4-curvas').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: data.curvas.x.map(x => x.toFixed(2)),
+                    datasets: [
+                        { label: 'Referencia', data: data.curvas.ref, borderColor: '#10b981', borderDash: [5, 5], pointRadius: 0 },
+                        { label: 'Lagrange', data: data.curvas.lag, borderColor: '#f97316', pointRadius: 0 },
+                        { label: 'Splines', data: data.curvas.spl, borderColor: '#7c3aed', pointRadius: 0 },
+                        { label: 'Nodos', data: nodosData, borderColor: '#0f172a', backgroundColor: '#0f172a', pointRadius: 5, showLine: false }
+                    ]
                 }
             });
 
-            if (data.escenario === 'NORMAL') {
-                document.getElementById('txt-conc-num').textContent =
-                    'Con matriz SPD estrictamente diagonal dominante (κ₂ = 2.36), todos los métodos convergen: LU en 1 paso directo, Gradiente Conjugado en 4 pasos exactos, Gauss-Seidel en 8 iteraciones y Jacobi en 18 iteraciones.';
-                document.getElementById('txt-conc-prob').textContent =
-                    'Los cuatro factores estructurales de desgaste x* = [1, 2, -1, 1] se calibran sin distorsión numérica, permitiendo estimar de forma confiable el umbral de inspección en 15.66 semanas.';
-            } else if (data.escenario === 'ESTRES') {
-                document.getElementById('txt-conc-num').textContent =
-                    'Al exigir tolerancia estricta (1e-10) con perturbación Δb del 0.20%, Jacobi requiere 29 iteraciones y Gauss-Seidel 12, mientras que Gradiente Conjugado mantiene convergencia en 4 iteraciones.';
-                document.getElementById('txt-conc-prob').textContent =
-                    'Debido al bajo número de condición (κ₂ = 2.36), un ruido del 0.20% en las lecturas de carga modifica los coeficientes de deterioro en apenas 0.24%, demostrando robustez física y matemática.';
-            } else {
-                document.getElementById('txt-conc-num').textContent =
-                    'En la matriz tipo Hilbert SPD (κ₂ = 7627.33), Jacobi diverge por pérdida de dominancia diagonal (ρ > 1), Gauss-Seidel sufre estancamiento severo (25.94% de error tras 500 iteraciones pese a tener residual 1.28e-4), y Gradiente Conjugado converge en 4 pasos.';
-                document.getElementById('txt-conc-prob').textContent =
-                    'Una calibración con sensores casi colineales (mal condicionada) amplifica pequeñas variaciones de lectura en más de 334%, haciendo riesgosa la predicción de mantenimiento si se usan métodos estacionarios simples.';
-            }
+            if (chartM4_Error) chartM4_Error.destroy();
+            chartM4_Error = new Chart(document.getElementById('chart-m4-error').getContext('2d'), {
+                type: 'bar',
+                data: { labels: ['Lagrange', 'Splines'], datasets: [{ label: 'RMSE', data: [data.errores.lag, data.errores.spl], backgroundColor: ['#f97316', '#7c3aed'] }] }
+            });
         }
 
         async function cargarHistorial() {
             let filas;
             try {
                 const res = await fetch('/api/historial');
-                if (!res.ok) throw new Error('Modo estático GitHub Pages');
+                if (!res.ok) throw new Error('Fallback local');
                 filas = await res.json();
             } catch (e) {
-                filas = JSON.parse(localStorage.getItem("simtele_historial") || JSON.stringify(INITIAL_HISTORIAL));
+                filas = JSON.parse(localStorage.getItem("simtele_hist_v2") || JSON.stringify(HISTORIAL_INICIAL));
             }
             const tbody = document.getElementById('tabla-historial');
             tbody.innerHTML = '';
             filas.forEach(f => {
-                tbody.innerHTML += `
-          <tr>
-            <td class="p-2.5 font-bold">#${f.sim_id}</td>
-            <td class="p-2.5">${f.fecha}</td>
-            <td class="p-2.5 font-semibold text-blue-700">${f.tipo}</td>
-            <td class="p-2.5">${f.parametros_json}</td>
-            <td class="p-2.5">${f.num_metodos} métodos</td>
-            <td class="p-2.5">
-              <button onclick="mostrarVista('simulador'); ejecutarSimulacion('${f.tipo}')" class="px-2 py-1 bg-blue-600 text-white rounded text-xs font-sans">Relanzar</button>
-            </td>
-          </tr>
-        `;
+                tbody.innerHTML += `<tr>
+          <td class="p-2.5 font-bold">#${f.sim_id}</td><td class="p-2.5">${f.fecha}</td>
+          <td class="p-2.5 font-semibold text-blue-700">${f.tipo}</td><td class="p-2.5">${f.caso || 'Módulo SIMTELE-RISK'}</td>
+        </tr>`;
             });
         }
-
-        // Ejecutar escenario NORMAL por defecto al cargar
-        window.addEventListener('DOMContentLoaded', () => ejecutarSimulacion('NORMAL'));
     </script>
 </body>
 

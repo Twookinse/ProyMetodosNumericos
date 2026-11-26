@@ -3,808 +3,380 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>SIMTELE-RISK | Plataforma Integrada (Semana 2)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIMTELE-RISK | Plataforma Integrada (Semana 3)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body class="bg-slate-50 text-slate-800 font-sans">
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
 
     <!-- ================= BARRA SUPERIOR ================= -->
     <header class="bg-slate-900 text-white shadow-md">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-wrap gap-4 justify-between items-center">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap gap-3 justify-between items-center">
             <div>
-                <h1 class="text-xl font-bold tracking-wide">SIMTELE-RISK · UMSA Informática</h1>
-                <p class="text-xs text-slate-300">Simulación Numérica y Análisis de Errores (Avance Semana 2)</p>
+                <div class="flex items-center gap-3 flex-wrap">
+                    <h1 class="text-lg sm:text-xl font-bold tracking-wide">SIMTELE-RISK · UMSA Informática</h1>
+                    <span id="badge-modo"
+                        class="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-slate-700 text-slate-200 border border-slate-600">
+                        Detectando modo...
+                    </span>
+                </div>
+                <p class="text-xs text-slate-300">Simulación Numérica, Teoría de Errores, Sensibilidad y Reproducibilidad (Semana 3)</p>
             </div>
-            <div class="flex flex-wrap gap-2">
-                <button onclick="mostrarVista('inicio')"
-                    class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-sm font-semibold">Inicio</button>
-                <button onclick="mostrarVista('modulo1'); ejecutarM1('NORMAL');"
-                    class="px-3 py-1.5 bg-red-600 hover:bg-red-500 rounded text-sm font-semibold">M1: Detención</button>
-                <button onclick="mostrarVista('modulo2'); ejecutarM2('NORMAL');"
-                    class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded text-sm font-semibold">M2:
-                    Deterioro</button>
-                <button onclick="mostrarVista('modulo3'); ejecutarM3('NORMAL');"
-                    class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 rounded text-sm font-semibold">M3:
-                    Oscilaciones</button>
-                <button onclick="mostrarVista('modulo4'); ejecutarM4('NORMAL');"
-                    class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 rounded text-sm font-semibold">M4:
-                    Sensores</button>
-                <button onclick="mostrarVista('der')"
-                    class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 rounded text-sm font-semibold">DER
-                    BD</button>
-                <button onclick="cargarHistorial(); mostrarVista('historial')"
-                    class="px-3 py-1.5 bg-slate-600 hover:bg-slate-500 rounded text-sm font-semibold">Historial
-                    BD</button>
-            </div>
+            <nav class="flex flex-wrap gap-1.5" aria-label="Navegación principal">
+                <button data-nav="inicio" onclick="AppUI.mostrarVista('inicio')"
+                    class="px-3 py-1.5 bg-slate-700 hover:bg-slate-600 rounded text-xs sm:text-sm font-semibold">Inicio</button>
+                <button data-nav="modulo1" onclick="AppUI.abrirModulo(1, true)"
+                    class="px-3 py-1.5 bg-red-600 hover:bg-red-500 rounded text-xs sm:text-sm font-semibold">M1: Detención</button>
+                <button data-nav="modulo2" onclick="AppUI.abrirModulo(2, true)"
+                    class="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 rounded text-xs sm:text-sm font-semibold">M2: Deterioro</button>
+                <button data-nav="modulo3" onclick="AppUI.abrirModulo(3, true)"
+                    class="px-3 py-1.5 bg-amber-600 hover:bg-amber-500 rounded text-xs sm:text-sm font-semibold">M3: Oscilaciones</button>
+                <button data-nav="modulo4" onclick="AppUI.abrirModulo(4, true)"
+                    class="px-3 py-1.5 bg-purple-600 hover:bg-purple-500 rounded text-xs sm:text-sm font-semibold">M4: Sensores</button>
+                <button data-nav="comparacion" onclick="AppUI.mostrarVista('comparacion')"
+                    class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 rounded text-xs sm:text-sm font-semibold">Comparación (12)</button>
+                <button data-nav="der" onclick="AppUI.mostrarVista('der')"
+                    class="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 rounded text-xs sm:text-sm font-semibold">DER BD</button>
+                <button data-nav="historial" onclick="AppUI.abrirHistorial()"
+                    class="px-3 py-1.5 bg-slate-600 hover:bg-slate-500 rounded text-xs sm:text-sm font-semibold">Historial BD</button>
+            </nav>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-6 py-6">
+    <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 py-6 flex-1 space-y-6">
 
         <!-- ================= VISTA 0: INICIO ================= -->
         <section id="vista-inicio" class="space-y-6">
             <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-                <h2 class="text-lg font-bold text-slate-900">Panel General de Casos de Estudio (4 Módulos Activos -
-                    Semana 2)</h2>
-                <p class="text-sm text-slate-600 mt-1">Seleccione un módulo en la barra superior o en las tarjetas para
-                    ejecutar los escenarios Normal, Estrés y Mal Condicionado.</p>
+                <h2 class="text-lg font-bold text-slate-900">Panel General de Casos de Estudio — Semana 3</h2>
+                <p class="text-sm text-slate-600 mt-1">
+                    Plataforma integrada de simulación numérica y análisis transversal de errores aplicada a un sistema hipotético de transporte por cable.
+                    Cada módulo ejecuta los escenarios <strong>NORMAL</strong>, <strong>ESTRÉS</strong> y <strong>MAL CONDICIONADO</strong> con parámetros editables, verificación contra referencia, sensibilidad y persistencia reproducible.
+                </p>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div onclick="mostrarVista('modulo1'); ejecutarM1('NORMAL');"
+
+            <!-- 4 Tarjetas -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                <div onclick="AppUI.abrirModulo(1, true)"
                     class="cursor-pointer hover:shadow-md transition bg-white rounded-lg shadow-sm border-l-4 border-red-500 p-5 border border-slate-200 flex flex-col justify-between">
                     <div>
-                        <span class="text-xs font-bold uppercase px-2 py-1 bg-red-50 text-red-700 rounded">M1 ·
-                            Detención de Emergencia</span>
+                        <span class="text-xs font-bold uppercase px-2 py-0.5 bg-red-50 text-red-700 rounded">M1 · Detención de Emergencia</span>
                         <h3 class="text-base font-bold mt-2">1. Detención de emergencia de cabinas</h3>
-                        <p class="text-xs text-slate-500 mt-1 font-mono">EDO (RK4), Integración (Simpson 1/3), Raíces
-                            (Bisección)</p>
+                        <p class="text-xs text-slate-500 mt-1 font-mono">EDO (RK2 Heun, RK4) · Integración (Trapecio, Simpson 1/3, Romberg) · Raíces (Bisección, Newton, Secante)</p>
                     </div>
                     <div class="mt-4 flex justify-end">
                         <span class="px-3 py-1 bg-red-600 text-white rounded text-xs font-semibold">Abrir M1 →</span>
                     </div>
                 </div>
-                <div onclick="mostrarVista('modulo2'); ejecutarM2('NORMAL');"
+
+                <div onclick="AppUI.abrirModulo(2, true)"
                     class="cursor-pointer hover:shadow-md transition bg-white rounded-lg shadow-sm border-l-4 border-blue-600 p-5 border border-slate-200 flex flex-col justify-between">
                     <div>
-                        <span class="text-xs font-bold uppercase px-2 py-1 bg-blue-50 text-blue-700 rounded">M2 ·
-                            Deterioro Mecánico</span>
+                        <span class="text-xs font-bold uppercase px-2 py-0.5 bg-blue-50 text-blue-700 rounded">M2 · Deterioro Mecánico</span>
                         <h3 class="text-base font-bold mt-2">2. Deterioro mecánico y mantenimiento</h3>
-                        <p class="text-xs text-slate-500 mt-1 font-mono">Sistemas Lineales (Jacobi, GS, GC, LU), Raíces
-                            (Newton-Raphson)</p>
+                        <p class="text-xs text-slate-500 mt-1 font-mono">Sistemas SPD 4×4 (Directa, LU, Jacobi, Gauss-Seidel, Gradiente Conjugado) · Raíces (Bisección, Newton, Secante)</p>
                     </div>
                     <div class="mt-4 flex justify-end">
                         <span class="px-3 py-1 bg-blue-600 text-white rounded text-xs font-semibold">Abrir M2 →</span>
                     </div>
                 </div>
-                <div onclick="mostrarVista('modulo3'); ejecutarM3('NORMAL');"
+
+                <div onclick="AppUI.abrirModulo(3, true)"
                     class="cursor-pointer hover:shadow-md transition bg-white rounded-lg shadow-sm border-l-4 border-amber-500 p-5 border border-slate-200 flex flex-col justify-between">
                     <div>
-                        <span class="text-xs font-bold uppercase px-2 py-1 bg-amber-50 text-amber-700 rounded">M3 ·
-                            Oscilaciones por viento</span>
+                        <span class="text-xs font-bold uppercase px-2 py-0.5 bg-amber-50 text-amber-700 rounded">M3 · Oscilaciones por Viento</span>
                         <h3 class="text-base font-bold mt-2">3. Oscilaciones laterales por viento</h3>
-                        <p class="text-xs text-slate-500 mt-1 font-mono">EDO de 2.º Orden (RK4), Integración de Energía
-                            (Simpson 1/3)</p>
+                        <p class="text-xs text-slate-500 mt-1 font-mono">EDO 2.º Orden (RK2 Heun, RK4) · Integración de Energía ∫x²dt (Trapecio, Simpson 1/3, Romberg)</p>
                     </div>
                     <div class="mt-4 flex justify-end">
                         <span class="px-3 py-1 bg-amber-600 text-white rounded text-xs font-semibold">Abrir M3 →</span>
                     </div>
                 </div>
-                <div onclick="mostrarVista('modulo4'); ejecutarM4('NORMAL');"
+
+                <div onclick="AppUI.abrirModulo(4, true)"
                     class="cursor-pointer hover:shadow-md transition bg-white rounded-lg shadow-sm border-l-4 border-purple-600 p-5 border border-slate-200 flex flex-col justify-between">
                     <div>
-                        <span class="text-xs font-bold uppercase px-2 py-1 bg-purple-50 text-purple-700 rounded">M4 ·
-                            Reconstrucción de señales</span>
+                        <span class="text-xs font-bold uppercase px-2 py-0.5 bg-purple-50 text-purple-700 rounded">M4 · Sensores en Torres</span>
                         <h3 class="text-base font-bold mt-2">4. Reconstrucción de señales de sensores</h3>
-                        <p class="text-xs text-slate-500 mt-1 font-mono">Interpolación (Lagrange, Diferencias Divididas,
-                            Splines Cúbicos)</p>
+                        <p class="text-xs text-slate-500 mt-1 font-mono">Interpolación (Lagrange, Newton Dif. Divididas, Splines Cúbicos Naturales) · Raíces (Bisección de cruce)</p>
                     </div>
                     <div class="mt-4 flex justify-end">
                         <span class="px-3 py-1 bg-purple-600 text-white rounded text-xs font-semibold">Abrir M4 →</span>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <!-- ================= VISTA MÓDULO 1: DETENCIÓN ================= -->
-        <section id="vista-modulo1" class="hidden space-y-6">
-            <div
-                class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
-                <div>
-                    <span class="text-xs font-bold uppercase text-red-600">Módulo 1</span>
-                    <h2 class="text-lg font-bold">Detención de Emergencia (EDO, Raíces, Integración)</h2>
-                </div>
-                <div class="flex items-center gap-3">
-                    <select id="select-m1" class="border border-slate-300 rounded px-3 py-1.5 text-sm">
-                        <option value="NORMAL">NORMAL (v0=6.0, a=1.5)</option>
-                        <option value="ESTRES">ESTRÉS (v0=8.5, a=0.75, sobrecarga)</option>
-                        <option value="MAL_CONDICIONADO">MAL COND. (Derivada nula al final)</option>
-                    </select>
-                    <button onclick="ejecutarM1()"
-                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-1.5 rounded text-sm font-semibold">Ejecutar
-                        M1</button>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-                    <h3 class="text-sm font-bold text-slate-700 mb-2">1. EDO: Velocidad v(t) con RK4</h3>
-                    <canvas id="chart-m1-edo" height="200"></canvas>
-                </div>
-                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-                    <h3 class="text-sm font-bold text-slate-700 mb-2">2. Raíces: Convergencia Bisección (Log10)</h3>
-                    <canvas id="chart-m1-raiz" height="200"></canvas>
-                </div>
-            </div>
-            <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 text-sm">
-                <h3 class="font-bold text-slate-700 mb-2">Métricas de Verificación</h3>
-                <p><strong>Tiempo de detención (Bisección):</strong> Exacto = <span id="m1-t-ex"
-                        class="text-emerald-600 font-bold"></span> s | Numérico = <span id="m1-t-num"
-                        class="text-blue-600 font-bold"></span> s</p>
-                <p><strong>Distancia de frenado (Simpson 1/3):</strong> Exacta = <span id="m1-d-ex"
-                        class="text-emerald-600 font-bold"></span> m | Numérica = <span id="m1-d-num"
-                        class="text-blue-600 font-bold"></span> m</p>
-            </div>
-        </section>
-
-        <!-- ================= VISTA MÓDULO 2: DETERIORO ================= -->
-        <section id="vista-modulo2" class="hidden space-y-6">
-            <div
-                class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
-                <div>
-                    <span class="text-xs font-bold uppercase text-blue-600">Módulo 2</span>
-                    <h2 class="text-lg font-bold">Deterioro Mecánico (Sistemas SPD y Raíces)</h2>
-                </div>
-                <div class="flex items-center gap-3">
-                    <select id="select-m2" class="border border-slate-300 rounded px-3 py-1.5 text-sm font-medium">
-                        <option value="NORMAL">NORMAL (κ₂ = 2.36, tol = 1e-6)</option>
-                        <option value="ESTRES">ESTRÉS (Perturbación Δb, tol = 1e-10)</option>
-                        <option value="MAL_CONDICIONADO">MAL CONDICIONADO (Hilbert SPD, κ₂ ≈ 7627)</option>
-                    </select>
-                    <button onclick="ejecutarM2()"
-                        class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded text-sm font-semibold">Ejecutar
-                        M2</button>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-                    <h3 class="text-sm font-bold text-slate-700 mb-2">1. Sistemas Lineales: Error Absoluto</h3>
-                    <canvas id="chart-m2-conv" height="200"></canvas>
-                </div>
-                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-                    <h3 class="text-sm font-bold text-slate-700 mb-2">2. Raíces (Newton-Raphson): Umbral de
-                        Mantenimiento</h3>
-                    <div class="mt-4 space-y-2 text-sm">
-                        <p><strong>Condición matriz A (κ₂):</strong> <span id="m2-cond"
-                                class="text-blue-600 font-bold"></span></p>
-                        <p><strong>Ref. Analítica SPD:</strong> <span id="m2-ref"
-                                class="text-emerald-600 font-bold font-mono"></span></p>
-                        <hr class="my-3">
-                        <p><strong>Tiempo al umbral (Exacto):</strong> <span id="m2-t-ex"
-                                class="text-emerald-600 font-bold"></span> kh</p>
-                        <p><strong>Tiempo al umbral (Newton):</strong> <span id="m2-t-newton"
-                                class="text-blue-600 font-bold"></span> kh</p>
-                    </div>
-                </div>
-            </div>
+            <!-- Matriz de Cobertura -->
             <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 overflow-x-auto">
-                <table class="w-full text-left border-collapse text-sm">
+                <h3 class="text-base font-bold text-slate-900 mb-3">Matriz de Cobertura Matemática (Familias × Módulos)</h3>
+                <table class="w-full text-left border-collapse text-xs sm:text-sm">
                     <thead>
                         <tr class="bg-slate-100 border-b border-slate-300">
-                            <th class="p-2.5">Método Numérico</th>
-                            <th class="p-2.5">Iteraciones</th>
-                            <th class="p-2.5">Vector Aproximado x̃</th>
-                            <th class="p-2.5">Error Abs. ||x*-x̃||∞</th>
+                            <th class="p-2.5">Familia</th>
+                            <th class="p-2.5">Métodos Implementados</th>
+                            <th class="p-2.5">M1: Detención</th>
+                            <th class="p-2.5">M2: Deterioro</th>
+                            <th class="p-2.5">M3: Oscilaciones</th>
+                            <th class="p-2.5">M4: Sensores</th>
                         </tr>
                     </thead>
-                    <tbody id="tabla-m2-metodos" class="divide-y divide-slate-200 font-mono text-xs"></tbody>
+                    <tbody class="divide-y divide-slate-200">
+                        <tr>
+                            <td class="p-2.5 font-semibold">Teoría de Errores</td>
+                            <td class="p-2.5">Absoluto, Relativo (sin ÷0), %, Residual, Sensibilidad, κ</td>
+                            <td class="p-2.5 font-semibold text-emerald-700">Transversal</td>
+                            <td class="p-2.5 font-semibold text-emerald-700">Transversal</td>
+                            <td class="p-2.5 font-semibold text-emerald-700">Transversal</td>
+                            <td class="p-2.5 font-semibold text-emerald-700">Transversal</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2.5 font-semibold">Sistemas Lineales</td>
+                            <td class="p-2.5">Directa (Elim. PP), LU, Jacobi, Gauss-Seidel, Grad. Conjugado</td>
+                            <td class="p-2.5 text-slate-400">—</td>
+                            <td class="p-2.5">Principal (SPD 4×4)</td>
+                            <td class="p-2.5 text-slate-400">—</td>
+                            <td class="p-2.5">Auxiliar (Thomas tridiagonal)</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2.5 font-semibold">Interpolación</td>
+                            <td class="p-2.5">Lagrange, Newton (Dif. Divididas), Splines Cúbicos Naturales</td>
+                            <td class="p-2.5 text-slate-400">—</td>
+                            <td class="p-2.5 text-slate-400">—</td>
+                            <td class="p-2.5 text-slate-400">—</td>
+                            <td class="p-2.5">Principal (nodos ocultados)</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2.5 font-semibold">Raíces</td>
+                            <td class="p-2.5">Bisección, Newton-Raphson, Secante</td>
+                            <td class="p-2.5">Principal v(t)=0</td>
+                            <td class="p-2.5">Principal D(t)=D<sub>u</sub></td>
+                            <td class="p-2.5 text-slate-400">—</td>
+                            <td class="p-2.5">Secundario cruce P(t)=y<sub>u</sub></td>
+                        </tr>
+                        <tr>
+                            <td class="p-2.5 font-semibold">Integración</td>
+                            <td class="p-2.5">Trapecio compuesto, Simpson 1/3 compuesto, Romberg</td>
+                            <td class="p-2.5">Principal ∫v(t)dt</td>
+                            <td class="p-2.5 text-slate-400">—</td>
+                            <td class="p-2.5">Principal ∫x(t)²dt</td>
+                            <td class="p-2.5 text-slate-400">—</td>
+                        </tr>
+                        <tr>
+                            <td class="p-2.5 font-semibold">EDO</td>
+                            <td class="p-2.5">RK2 (Heun), RK4 (Clásico)</td>
+                            <td class="p-2.5">Principal (x', v')</td>
+                            <td class="p-2.5 text-slate-400">—</td>
+                            <td class="p-2.5">Principal (x', v')</td>
+                            <td class="p-2.5 text-slate-400">—</td>
+                        </tr>
+                    </tbody>
                 </table>
             </div>
+
+            <!-- Conclusión Integradora y Avisos -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-5">
+                    <h3 class="text-sm font-bold text-blue-900 uppercase tracking-wide mb-2">Conclusión Integradora del Sistema</h3>
+                    <p class="text-sm text-blue-950 leading-relaxed">
+                        Los cuatro módulos demuestran que la confiabilidad de un análisis numérico no depende solo de la interfaz ni de un único algoritmo, sino de acoplar:
+                        (1) formulaciones matemáticas verificables contra soluciones analíticas o referencias de paso fino;
+                        (2) teoría de errores transversal que distingue entre <em>error numérico de discretización</em>, <em>fallo de convergencia iterativa</em> (como Jacobi cuando ρ(T<sub>J</sub>) ≥ 1) y <em>mal condicionamiento inherente del problema</em> (como κ₂ elevado en Hilbert, raíz doble f'(t*)=0 o constante de Lebesgue Λ alta en Runge); y
+                        (3) trazabilidad completa mediante persistencia SQLite y motor dual Python/JS reproducible.
+                    </p>
+                </div>
+                <div class="bg-amber-50 border border-amber-200 rounded-lg p-5">
+                    <h3 class="text-sm font-bold text-amber-900 uppercase tracking-wide mb-2">Alcance Metodológico y Avisos</h3>
+                    <ul class="text-sm text-amber-950 list-disc pl-5 space-y-1.5">
+                        <li>Los datos y parámetros empleados en todos los módulos son <strong>sintéticos y supuestos</strong> para fines académicos.</li>
+                        <li>Los escenarios están inspirados en un sistema de transporte por cable (contexto Mi Teleférico, La Paz), pero son <strong>hipotéticos</strong> y no describen fallas reales de ninguna operación.</li>
+                        <li>Esta es una aplicación <strong>estrictamente educativa</strong>, sin conexión ni control sobre equipos electromecánicos reales.</li>
+                    </ul>
+                </div>
+            </div>
         </section>
 
-        <!-- ================= VISTA MÓDULO 3: OSCILACIONES ================= -->
-        <section id="vista-modulo3" class="hidden space-y-6">
-            <div
-                class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
+        <!-- ================= VISTAS DE MÓDULOS 1..4 (RENDERIZADAS POR app.js) ================= -->
+        <section id="vista-modulo1" class="hidden space-y-6"></section>
+        <section id="vista-modulo2" class="hidden space-y-6"></section>
+        <section id="vista-modulo3" class="hidden space-y-6"></section>
+        <section id="vista-modulo4" class="hidden space-y-6"></section>
+
+        <!-- ================= VISTA COMPARACIÓN GLOBAL (12 EXPERIMENTOS) ================= -->
+        <section id="vista-comparacion" class="hidden space-y-6">
+            <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
                 <div>
-                    <span class="text-xs font-bold uppercase text-amber-600">Módulo 3</span>
-                    <h2 class="text-lg font-bold">Oscilaciones por Viento (EDO y Energía Integrada)</h2>
+                    <h2 class="text-lg font-bold text-slate-900">Comparación Transversal (4 Módulos × 3 Escenarios = 12 Experimentos)</h2>
+                    <p class="text-sm text-slate-600">Ejecuta los 12 escenarios predefinidos sin sobrescribir el historial guardado y verifica cada métrica principal contra su referencia.</p>
                 </div>
-                <div class="flex items-center gap-3">
-                    <select id="select-m3" class="border border-slate-300 rounded px-3 py-1.5 text-sm">
-                        <option value="NORMAL">NORMAL (Amortiguamiento estándar)</option>
-                        <option value="ESTRES">ESTRÉS (Bajo amortiguamiento)</option>
-                        <option value="MAL_CONDICIONADO">MAL COND. (Resonancia)</option>
-                    </select>
-                    <button onclick="ejecutarM3()"
-                        class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-1.5 rounded text-sm font-semibold">Ejecutar
-                        M3</button>
-                </div>
+                <button id="btn-ejecutar-12" onclick="AppUI.ejecutarComparacion12()"
+                    class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded text-sm font-semibold">
+                    Ejecutar los 12 experimentos
+                </button>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-                    <h3 class="text-sm font-bold text-slate-700 mb-2">1. Trayectoria de Oscilación (RK4)</h3>
-                    <canvas id="chart-m3-osc" height="200"></canvas>
-                </div>
-                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 flex flex-col justify-center">
-                    <h3 class="text-sm font-bold text-slate-700 mb-2">2. Energía Acumulada (Simpson 1/3)</h3>
-                    <div class="text-center p-6 bg-amber-50 border border-amber-200 rounded-lg">
-                        <p class="text-sm text-slate-600 uppercase tracking-widest mb-2">Índice de Severidad Vibratoria
-                        </p>
-                        <p class="text-4xl font-bold text-amber-700"><span id="m3-energia">0.0000</span> <span
-                                class="text-xl">m²·s</span></p>
-                    </div>
-                </div>
+            <div id="contenedor-comparacion-12" class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 overflow-x-auto">
+                <p class="text-sm text-slate-500">Presione "Ejecutar los 12 experimentos" para generar la matriz de verificación 4 × 3.</p>
             </div>
         </section>
 
-        <!-- ================= VISTA MÓDULO 4: SENSORES ================= -->
-        <section id="vista-modulo4" class="hidden space-y-6">
-            <div
-                class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 flex flex-wrap justify-between items-center gap-4">
-                <div>
-                    <span class="text-xs font-bold uppercase text-purple-600">Módulo 4</span>
-                    <h2 class="text-lg font-bold">Reconstrucción de Sensores (Interpolación)</h2>
-                </div>
-                <div class="flex items-center gap-3">
-                    <select id="select-m4" class="border border-slate-300 rounded px-3 py-1.5 text-sm">
-                        <option value="NORMAL">NORMAL (7 nodos puros)</option>
-                        <option value="ESTRES">ESTRÉS (Ruido insertado en sensores)</option>
-                        <option value="MAL_CONDICIONADO">MAL COND. (Fenómeno Runge, grado alto)</option>
-                    </select>
-                    <button onclick="ejecutarM4()"
-                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-1.5 rounded text-sm font-semibold">Ejecutar
-                        M4</button>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-                    <h3 class="text-sm font-bold text-slate-700 mb-2">1. Curvas: Lagrange vs Splines vs Referencia</h3>
-                    <canvas id="chart-m4-curvas" height="200"></canvas>
-                </div>
-                <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-                    <h3 class="text-sm font-bold text-slate-700 mb-2">2. Error RMSE de Reconstrucción</h3>
-                    <canvas id="chart-m4-error" height="150"></canvas>
-                    <div class="mt-4 grid grid-cols-2 gap-4 text-center text-sm">
-                        <div class="p-2 bg-orange-50 border border-orange-200 rounded">
-                            <p class="text-slate-500 text-xs uppercase">Lagrange</p>
-                            <p id="m4-rmse-lag" class="font-bold text-orange-700">-</p>
-                        </div>
-                        <div class="p-2 bg-purple-50 border border-purple-200 rounded">
-                            <p class="text-slate-500 text-xs uppercase">Splines</p>
-                            <p id="m4-rmse-spl" class="font-bold text-purple-700">-</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- ================= VISTA DER Y VISTA HISTORIAL ================= -->
+        <!-- ================= VISTA DER BD ================= -->
         <section id="vista-der" class="hidden space-y-6">
-            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200">
-                <div class="flex justify-between items-center mb-4">
+            <div class="bg-white p-6 rounded-lg shadow-sm border border-slate-200 space-y-5">
+                <div class="flex flex-wrap justify-between items-center gap-3">
                     <div>
-                        <h2 class="text-lg font-bold text-slate-900">Modelo Entidad-Relación (DER) · Persistencia SQLite
-                        </h2>
-                        <p class="text-sm text-slate-600">Esquema físico en <code>simtele_risk.db</code> con integridad
-                            referencial (ON DELETE CASCADE).</p>
+                        <h2 class="text-lg font-bold text-slate-900">Modelo Entidad-Relación (DER) · Persistencia SQLite (6 Tablas)</h2>
+                        <p class="text-sm text-slate-600">Esquema físico en <code>simtele_risk.db</code> (<code>schema.sql</code>) con integridad referencial activa (<code>PRAGMA foreign_keys = ON</code> y <code>ON DELETE CASCADE</code>).</p>
                     </div>
-                    <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded">Motor:
-                        SQLite3</span>
+                    <span class="px-3 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded">Motor: SQLite3</span>
                 </div>
-                <!-- Bloque de diseño CSS Grid para las 6 Tablas -->
-                <div class="bg-slate-50 p-6 rounded-lg border border-slate-200 overflow-auto">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4 items-start min-w-[800px]">
-                        <!-- Tabla 1 -->
+
+                <div class="bg-slate-50 p-5 rounded-lg border border-slate-200 overflow-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 min-w-[720px]">
                         <div class="bg-white border-2 border-slate-800 rounded shadow-sm text-xs font-mono">
-                            <div class="bg-slate-800 text-white p-2 font-bold text-center">caso_estudio</div>
-                            <div class="p-2 space-y-1">
-                                <p><span class="text-amber-600">PK id</span></p>
-                                <p>nombre</p>
-                                <p>modelo_version</p>
+                            <div class="bg-slate-800 text-white p-2 font-bold text-center">1. caso_estudio</div>
+                            <div class="p-3 space-y-1">
+                                <p><span class="text-amber-600 font-bold">PK id</span> INTEGER</p>
+                                <p>nombre TEXT</p>
+                                <p>modelo_version TEXT</p>
+                                <p class="text-[11px] text-slate-500 pt-1">Relación 1 : N → escenario</p>
                             </div>
                         </div>
-                        <!-- Tabla 2 -->
                         <div class="bg-white border-2 border-blue-700 rounded shadow-sm text-xs font-mono">
-                            <div class="bg-blue-700 text-white p-2 font-bold text-center">escenario</div>
-                            <div class="p-2 space-y-1">
-                                <p><span class="text-amber-600">PK id</span></p>
-                                <p><span class="text-blue-600">FK caso_id</span></p>
-                                <p>tipo</p>
-                                <p>parametros_json</p>
+                            <div class="bg-blue-700 text-white p-2 font-bold text-center">2. escenario</div>
+                            <div class="p-3 space-y-1">
+                                <p><span class="text-amber-600 font-bold">PK id</span> INTEGER</p>
+                                <p><span class="text-blue-600 font-bold">FK caso_id</span> INTEGER</p>
+                                <p>tipo (NORMAL | ESTRES | MAL_CONDICIONADO)</p>
+                                <p>parametros_json TEXT</p>
+                                <p>fuente_datos TEXT</p>
+                                <p class="text-[11px] text-slate-500 pt-1">Relación 1 : N → simulacion</p>
                             </div>
                         </div>
-                        <!-- Tabla 3 -->
                         <div class="bg-white border-2 border-indigo-700 rounded shadow-sm text-xs font-mono">
-                            <div class="bg-indigo-700 text-white p-2 font-bold text-center">simulacion</div>
-                            <div class="p-2 space-y-1">
-                                <p><span class="text-amber-600">PK id</span></p>
-                                <p><span class="text-blue-600">FK escenario_id</span></p>
-                                <p>fecha</p>
-                                <p>estado</p>
+                            <div class="bg-indigo-700 text-white p-2 font-bold text-center">3. simulacion</div>
+                            <div class="p-3 space-y-1">
+                                <p><span class="text-amber-600 font-bold">PK id</span> INTEGER</p>
+                                <p><span class="text-blue-600 font-bold">FK escenario_id</span> INTEGER</p>
+                                <p>fecha TIMESTAMP</p>
+                                <p>usuario_equipo TEXT</p>
+                                <p>estado TEXT</p>
+                                <p class="text-indigo-700 font-semibold">snapshot_json TEXT</p>
+                                <p class="text-[11px] text-slate-500 pt-1">Relación 1 : N → ejecucion_metodo</p>
                             </div>
                         </div>
-                        <!-- Tabla 4 -->
                         <div class="bg-white border-2 border-emerald-700 rounded shadow-sm text-xs font-mono">
-                            <div class="bg-emerald-700 text-white p-2 font-bold text-center">ejecucion_metodo</div>
-                            <div class="p-2 space-y-1">
-                                <p><span class="text-amber-600">PK id</span></p>
-                                <p><span class="text-blue-600">FK simulacion_id</span></p>
-                                <p>metodo</p>
-                                <p>tolerancia/paso</p>
+                            <div class="bg-emerald-700 text-white p-2 font-bold text-center">4. ejecucion_metodo</div>
+                            <div class="p-3 space-y-1">
+                                <p><span class="text-amber-600 font-bold">PK id</span> INTEGER</p>
+                                <p><span class="text-blue-600 font-bold">FK simulacion_id</span> INTEGER</p>
+                                <p>metodo TEXT</p>
+                                <p>tolerancia REAL, paso REAL, max_iter INT</p>
+                                <p>convergio INTEGER, tiempo_ms REAL</p>
+                                <p class="text-[11px] text-slate-500 pt-1">1 : N → iteracion_resultado · 1 : 1 → resultado_resumen</p>
                             </div>
                         </div>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-6 max-w-xl mx-auto">
-                        <!-- Tabla 5 -->
                         <div class="bg-white border-2 border-purple-700 rounded shadow-sm text-xs font-mono">
-                            <div class="bg-purple-700 text-white p-2 font-bold text-center">iteracion_resultado</div>
-                            <div class="p-2 space-y-1">
-                                <p><span class="text-amber-600">PK id</span></p>
-                                <p><span class="text-blue-600">FK ejecucion_id</span></p>
-                                <p>aproximacion_json</p>
+                            <div class="bg-purple-700 text-white p-2 font-bold text-center">5. iteracion_resultado</div>
+                            <div class="p-3 space-y-1">
+                                <p><span class="text-amber-600 font-bold">PK id</span> INTEGER</p>
+                                <p><span class="text-blue-600 font-bold">FK ejecucion_id</span> INTEGER</p>
+                                <p>numero INTEGER</p>
+                                <p>aproximacion_json TEXT</p>
+                                <p>residual REAL, error_abs REAL, error_rel REAL</p>
                             </div>
                         </div>
-                        <!-- Tabla 6 -->
                         <div class="bg-white border-2 border-amber-600 rounded shadow-sm text-xs font-mono">
-                            <div class="bg-amber-600 text-white p-2 font-bold text-center">resultado_resumen</div>
-                            <div class="p-2 space-y-1">
-                                <p><span class="text-amber-600">PK id</span></p>
-                                <p><span class="text-blue-600">FK ejecucion_id</span></p>
-                                <p>metrica_error_json</p>
+                            <div class="bg-amber-600 text-white p-2 font-bold text-center">6. resultado_resumen</div>
+                            <div class="p-3 space-y-1">
+                                <p><span class="text-amber-600 font-bold">PK id</span> INTEGER</p>
+                                <p><span class="text-blue-600 font-bold">FK ejecucion_id</span> INTEGER (UNIQUE)</p>
+                                <p>referencia TEXT, valor_json TEXT</p>
+                                <p>metrica_error_json TEXT</p>
+                                <p>interpretacion TEXT</p>
                             </div>
                         </div>
                     </div>
+                </div>
+
+                <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4 text-sm text-emerald-950">
+                    <h3 class="font-bold mb-1">Prueba de Persistencia y Reproducibilidad</h3>
+                    <p>
+                        Al ejecutar una simulación se guarda en una sola transacción el escenario con sus parámetros, la simulación con su <code>snapshot_json</code> completo (para reconstruir indicadores, series y gráficas tras recargar o reiniciar el servidor) y cada ejecución de método con sus iteraciones y resumen.
+                        En la vista <strong>Historial BD</strong>, <strong>Abrir</strong> restaura la captura guardada y <strong>Relanzar</strong> recalcula desde cero comparando cada resultado nuevo contra el guardado dentro de <code>max(1e-9, tolerancia)</code>.
+                    </p>
                 </div>
             </div>
         </section>
 
+        <!-- ================= VISTA HISTORIAL ================= -->
         <section id="vista-historial" class="hidden space-y-6">
-            <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200">
-                <h2 class="text-lg font-bold text-slate-900 mb-2">Historial Persistente de Simulaciones (SQLite)</h2>
-                <table class="w-full text-left border-collapse text-sm">
-                    <thead>
-                        <tr class="bg-slate-100 border-b border-slate-300">
-                            <th class="p-2.5">ID Simulación</th>
-                            <th class="p-2.5">Fecha y Hora</th>
-                            <th class="p-2.5">Escenario</th>
-                            <th class="p-2.5">Módulo de Estudio</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabla-historial" class="divide-y divide-slate-200 text-xs"></tbody>
-                </table>
+            <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 space-y-4">
+                <div class="flex flex-wrap justify-between items-center gap-3">
+                    <div>
+                        <h2 class="text-lg font-bold text-slate-900">Historial Persistente de Simulaciones</h2>
+                        <p id="historial-subtitulo" class="text-xs text-slate-600">Registros almacenados en SQLite (o localStorage en modo autónomo).</p>
+                    </div>
+                    <button onclick="AppUI.cargarHistorial()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded text-xs font-semibold">
+                        Actualizar lista
+                    </button>
+                </div>
+
+                <!-- Filtros -->
+                <div class="grid grid-cols-1 sm:grid-cols-4 gap-3 bg-slate-50 p-3 rounded border border-slate-200 text-xs">
+                    <div>
+                        <label for="hist-filtro-modulo" class="block font-semibold text-slate-600 mb-1">Módulo</label>
+                        <select id="hist-filtro-modulo" onchange="AppUI.cargarHistorial()" class="w-full border border-slate-300 rounded px-2.5 py-1.5 bg-white">
+                            <option value="">Todos los módulos</option>
+                            <option value="1">Módulo 1: Detención</option>
+                            <option value="2">Módulo 2: Deterioro</option>
+                            <option value="3">Módulo 3: Oscilaciones</option>
+                            <option value="4">Módulo 4: Sensores</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="hist-filtro-escenario" class="block font-semibold text-slate-600 mb-1">Escenario</label>
+                        <select id="hist-filtro-escenario" onchange="AppUI.cargarHistorial()" class="w-full border border-slate-300 rounded px-2.5 py-1.5 bg-white">
+                            <option value="">Todos los escenarios</option>
+                            <option value="NORMAL">NORMAL</option>
+                            <option value="ESTRES">ESTRÉS</option>
+                            <option value="MAL_CONDICIONADO">MAL CONDICIONADO</option>
+                        </select>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <label for="hist-filtro-q" class="block font-semibold text-slate-600 mb-1">Buscar (ID, fecha o caso)</label>
+                        <div class="flex gap-2">
+                            <input id="hist-filtro-q" type="text" placeholder="Ej. #25, 2026-11, Deterioro..."
+                                oninput="AppUI.cargarHistorial()"
+                                class="w-full border border-slate-300 rounded px-2.5 py-1.5 bg-white">
+                            <button onclick="document.getElementById('hist-filtro-modulo').value='';document.getElementById('hist-filtro-escenario').value='';document.getElementById('hist-filtro-q').value='';AppUI.cargarHistorial();"
+                                class="px-2.5 py-1.5 bg-slate-200 hover:bg-slate-300 rounded font-semibold">Limpiar</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs sm:text-sm">
+                        <thead>
+                            <tr class="bg-slate-100 border-b border-slate-300">
+                                <th class="p-2.5">ID</th>
+                                <th class="p-2.5">Fecha y Hora</th>
+                                <th class="p-2.5">Módulo</th>
+                                <th class="p-2.5">Escenario</th>
+                                <th class="p-2.5">Estado</th>
+                                <th class="p-2.5 text-right">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabla-historial" class="divide-y divide-slate-200 text-xs"></tbody>
+                    </table>
+                </div>
             </div>
         </section>
 
     </main>
 
-    <!-- ================= LÓGICA JAVASCRIPT (CON RESPALDO LOCAL Y GITHUB PAGES) ================= -->
-    <script>
-        let chartM1_EDO, chartM1_Raiz;
-        let chartM2_Conv;
-        let chartM3_Osc;
-        let chartM4_Curvas, chartM4_Error;
-
-        const HISTORIAL_INICIAL = [
-            { sim_id: 12, fecha: "2026-11-10 04:43:21", tipo: "MAL_CONDICIONADO", caso: "Módulo 2: Deterioro mecánico y mantenimiento" },
-            { sim_id: 11, fecha: "2026-11-10 04:34:01", tipo: "ESTRES", caso: "Módulo 2: Deterioro mecánico y mantenimiento" },
-            { sim_id: 10, fecha: "2026-11-10 04:32:51", tipo: "NORMAL", caso: "Módulo 2: Deterioro mecánico y mantenimiento" }
-        ];
-
-        function registrarHistorialLocal(tipo, casoNombre) {
-            const lista = JSON.parse(localStorage.getItem("simtele_hist_v2") || JSON.stringify(HISTORIAL_INICIAL));
-            const nextId = (lista[0]?.sim_id || 12) + 1;
-            const fecha = new Date().toISOString().replace("T", " ").substring(0, 19);
-            lista.unshift({ sim_id: nextId, fecha, tipo, caso: casoNombre });
-            localStorage.setItem("simtele_hist_v2", JSON.stringify(lista.slice(0, 15)));
-        }
-
-        // --- MOTORES NUMÉRICOS EN JS (RESPALDO PARA GITHUB PAGES / ARCHIVO LOCAL) ---
-        function rk4JS(f, t0, y0, h, nSteps) {
-            const historial = [];
-            let t = t0;
-            let y = [...y0];
-            for (let k = 0; k <= nSteps; k++) {
-                historial.push({ iter: k, t: Number(t.toFixed(4)), y: y.map(v => Number(v.toFixed(6))) });
-                if (k === nSteps) break;
-                const k1 = f(t, y);
-                const k2 = f(t + h / 2, y.map((v, i) => v + (h / 2) * k1[i]));
-                const k3 = f(t + h / 2, y.map((v, i) => v + (h / 2) * k2[i]));
-                const k4 = f(t + h, y.map((v, i) => v + h * k3[i]));
-                y = y.map((v, i) => v + (h / 6) * (k1[i] + 2 * k2[i] + 2 * k3[i] + k4[i]));
-                t += h;
-            }
-            return historial;
-        }
-
-        function biseccionJS(f, a, b, xRef, tol = 1e-6, maxIter = 100) {
-            const historial = [];
-            let xMid = a;
-            for (let k = 1; k <= maxIter; k++) {
-                xMid = (a + b) / 2.0;
-                const res = Math.abs(f(xMid));
-                const errAbs = Math.abs(xMid - xRef);
-                historial.push({ iter: k, x: Number(xMid.toFixed(6)), residual: res, error_abs: errAbs });
-                if (res < tol || Math.abs(b - a) / 2.0 < tol) break;
-                if (f(a) * f(xMid) < 0) b = xMid;
-                else a = xMid;
-            }
-            return { resultado: xMid, historial };
-        }
-
-        function simpson13JS(f, a, b, n) {
-            if (n % 2 !== 0) n += 1;
-            const h = (b - a) / n;
-            let impares = 0, pares = 0;
-            for (let i = 1; i < n; i += 2) impares += f(a + i * h);
-            for (let i = 2; i < n; i += 2) pares += f(a + i * h);
-            return (h / 3.0) * (f(a) + 4 * impares + 2 * pares + f(b));
-        }
-
-        function simularM1Local(tipo) {
-            let v0 = 6.0, a0 = 1.5, h = 0.1;
-            if (tipo === "ESTRES") { v0 = 8.5; a0 = 0.75; h = 0.5; }
-            else if (tipo === "MAL_CONDICIONADO") { v0 = 6.0; a0 = 1.5; h = 0.25; }
-            const tDetEx = v0 / a0;
-            const dFrenadoEx = (v0 * v0) / (2 * a0);
-            const histRk4 = rk4JS(() => [-a0], 0.0, [v0], h, Math.floor(tDetEx / h) + 2);
-            const fRaiz = (t) => tipo !== "MAL_CONDICIONADO" ? (v0 - a0 * t) : (v0 - a0 * t) * Math.abs(v0 - a0 * t);
-            const bisec = biseccionJS(fRaiz, 0.0, tDetEx + 2.3, tDetEx);
-            const dAprox = simpson13JS((t) => Math.max(0.0, v0 - a0 * t), 0.0, tDetEx, 40);
-            registrarHistorialLocal(tipo, "Módulo 1: Detención de emergencia de cabinas");
-            return {
-                escenario: tipo,
-                referencia: { t_det: tDetEx, d_frenado: dFrenadoEx },
-                edo_rk4: { historial: histRk4 },
-                raiz_bisec: bisec,
-                int_simpson: { resultado: dAprox }
-            };
-        }
-
-        function normInf(v) { return Math.max(...v.map(x => Math.abs(x))); }
-        function matVec(A, x) { return A.map(row => row.reduce((s, val, j) => s + val * x[j], 0)); }
-        function vecSub(a, b) { return a.map((v, i) => v - b[i]); }
-        function dot(a, b) { return a.reduce((s, v, i) => s + v * b[i], 0); }
-
-        function solveLUJS(A, b, xRef) {
-            const n = b.length;
-            const L = Array.from({ length: n }, (_, i) => Array.from({ length: n }, (__, j) => i === j ? 1 : 0));
-            const U = A.map(r => [...r]);
-            for (let i = 0; i < n; i++) {
-                for (let j = i + 1; j < n; j++) {
-                    const f = U[j][i] / U[i][i];
-                    L[j][i] = f;
-                    for (let k = i; k < n; k++) U[j][k] -= f * U[i][k];
-                }
-            }
-            const y = new Array(n).fill(0);
-            for (let i = 0; i < n; i++) {
-                let s = 0;
-                for (let k = 0; k < i; k++) s += L[i][k] * y[k];
-                y[i] = b[i] - s;
-            }
-            const x = new Array(n).fill(0);
-            for (let i = n - 1; i >= 0; i--) {
-                let s = 0;
-                for (let k = i + 1; k < n; k++) s += U[i][k] * x[k];
-                x[i] = (y[i] - s) / U[i][i];
-            }
-            const errAbs = normInf(vecSub(x, xRef));
-            return { solucion: x.map(v => Number(v.toFixed(6))), error_abs: errAbs, historial: [{ iter: 1, error_abs: errAbs }], iteraciones_totales: 1 };
-        }
-
-        function simularM2Local(tipo) {
-            let A = [[10, -1, 2, 0], [-1, 11, -1, 3], [2, -1, 10, -1], [0, 3, -1, 8]];
-            let xEx = [1, 2, -1, 1];
-            let b = matVec(A, xEx);
-            let tol = tipo === "ESTRES" ? 1e-10 : 1e-6;
-            let cond = 2.36;
-            if (tipo === "ESTRES") {
-                const db = [0.05, -0.05, 0.05, -0.05];
-                b = b.map((v, i) => v + db[i]);
-                xEx = solveLUJS(A, b, xEx).solucion;
-            } else if (tipo === "MAL_CONDICIONADO") {
-                A = Array.from({ length: 4 }, (_, i) => Array.from({ length: 4 }, (__, j) => 1 / (i + j + 1) + (i === j ? 1e-4 : 0)));
-                b = matVec(A, xEx);
-                cond = 7627.33;
-            }
-            const n = 4, maxIter = 500;
-            // Jacobi
-            let xJ = [0, 0, 0, 0], histJ = [];
-            for (let k = 1; k <= maxIter; k++) {
-                const xNew = [0, 0, 0, 0];
-                for (let i = 0; i < n; i++) {
-                    let s = 0;
-                    for (let j = 0; j < n; j++) if (j !== i) s += A[i][j] * xJ[j];
-                    xNew[i] = (b[i] - s) / A[i][i];
-                }
-                const err = normInf(vecSub(xNew, xEx));
-                histJ.push({ iter: k, error_abs: err });
-                if (normInf(vecSub(xNew, xJ)) < tol || err > 1e100) { xJ = xNew; break; }
-                xJ = xNew;
-            }
-            // Gauss-Seidel
-            let xGS = [0, 0, 0, 0], histGS = [];
-            for (let k = 1; k <= maxIter; k++) {
-                const xOld = [...xGS];
-                for (let i = 0; i < n; i++) {
-                    let s1 = 0, s2 = 0;
-                    for (let j = 0; j < i; j++) s1 += A[i][j] * xGS[j];
-                    for (let j = i + 1; j < n; j++) s2 += A[i][j] * xOld[j];
-                    xGS[i] = (b[i] - s1 - s2) / A[i][i];
-                }
-                const err = normInf(vecSub(xGS, xEx));
-                histGS.push({ iter: k, error_abs: err });
-                if (normInf(vecSub(xGS, xOld)) < tol) break;
-            }
-            // Gradiente Conjugado
-            let xCG = [0, 0, 0, 0], r = vecSub(b, matVec(A, xCG)), p = [...r], rsOld = dot(r, r), histCG = [];
-            for (let k = 1; k <= maxIter; k++) {
-                const Ap = matVec(A, p);
-                const alpha = rsOld / dot(p, Ap);
-                xCG = xCG.map((v, i) => v + alpha * p[i]);
-                r = r.map((v, i) => v - alpha * Ap[i]);
-                const rsNew = dot(r, r);
-                const err = normInf(vecSub(xCG, xEx));
-                histCG.push({ iter: k, error_abs: err });
-                if (Math.sqrt(rsNew) < tol) break;
-                p = r.map((v, i) => v + (rsNew / rsOld) * p[i]);
-                rsOld = rsNew;
-            }
-            const luRes = solveLUJS(A, b, xEx);
-            // Newton-Raphson D(t)
-            const D0 = 10.0, alpha = 3.5, beta = 0.75, Dumbral = 75.0;
-            const tExRaiz = (-alpha + Math.sqrt(alpha * alpha - 4 * beta * (D0 - Dumbral))) / (2 * beta);
-            let tN = 1.0;
-            for (let k = 1; k <= 100; k++) {
-                const f = D0 + alpha * tN + beta * tN * tN - Dumbral;
-                const df = alpha + 2 * beta * tN;
-                const tNext = tN - f / df;
-                if (Math.abs(tNext - tN) < 1e-6) { tN = tNext; break; }
-                tN = tNext;
-            }
-            registrarHistorialLocal(tipo, "Módulo 2: Deterioro mecánico y mantenimiento");
-            return {
-                escenario: tipo,
-                condicion: cond,
-                referencia: xEx.map(v => Number(v.toFixed(4))),
-                metodos: {
-                    "Jacobi": { solucion: xJ.map(v => Number(v.toFixed(6))), error_abs: histJ[histJ.length - 1].error_abs, historial: histJ.slice(0, 25), iteraciones_totales: histJ.length },
-                    "Gauss-Seidel": { solucion: xGS.map(v => Number(v.toFixed(6))), error_abs: histGS[histGS.length - 1].error_abs, historial: histGS.slice(0, 25), iteraciones_totales: histGS.length },
-                    "Gradiente Conjugado": { solucion: xCG.map(v => Number(v.toFixed(6))), error_abs: histCG[histCG.length - 1].error_abs, historial: histCG.slice(0, 25), iteraciones_totales: histCG.length },
-                    "Factorización LU": luRes
-                },
-                raiz_newton: { resultado: tN, exacto: tExRaiz }
-            };
-        }
-
-        function simularM3Local(tipo) {
-            const m = 800.0, k = 1280.0;
-            let c = 320.0;
-            if (tipo === "ESTRES") c = 80.0;
-            else if (tipo === "MAL_CONDICIONADO") c = 16.0;
-            const w0 = Math.sqrt(k / m), zeta = c / (2 * Math.sqrt(m * k)), wd = w0 * Math.sqrt(1 - zeta * zeta);
-            const xEx = (t) => Math.exp(-zeta * w0 * t) * (0.35 * Math.cos(wd * t) + (zeta * w0 * 0.35) / wd * Math.sin(wd * t));
-            const histRk4 = rk4JS((t, y) => [y[1], (-c * y[1] - k * y[0]) / m], 0.0, [0.35, 0.0], 0.05, 100);
-            const energia = simpson13JS((t) => { const v = xEx(t); return v * v; }, 0.0, 5.0, 40);
-            registrarHistorialLocal(tipo, "Módulo 3: Oscilaciones por viento");
-            return { escenario: tipo, edo_rk4: { historial: histRk4 }, energia };
-        }
-
-        function lagrangeJS(xNodes, yNodes, xEval) {
-            let yEval = 0.0;
-            for (let i = 0; i < xNodes.length; i++) {
-                let Li = 1.0;
-                for (let j = 0; j < xNodes.length; j++) {
-                    if (i !== j) Li *= (xEval - xNodes[j]) / (xNodes[i] - xNodes[j]);
-                }
-                yEval += yNodes[i] * Li;
-            }
-            return yEval;
-        }
-
-        function splinesCubicosJS(xNodes, yNodes, xEval) {
-            const n = xNodes.length - 1;
-            const h = [];
-            for (let i = 0; i < n; i++) h.push(xNodes[i + 1] - xNodes[i]);
-            const alpha = new Array(n).fill(0);
-            for (let i = 1; i < n; i++) {
-                alpha[i] = (3 / h[i]) * (yNodes[i + 1] - yNodes[i]) - (3 / h[i - 1]) * (yNodes[i] - yNodes[i - 1]);
-            }
-            const l = new Array(n + 1).fill(1), mu = new Array(n + 1).fill(0), z = new Array(n + 1).fill(0);
-            for (let i = 1; i < n; i++) {
-                l[i] = 2 * (xNodes[i + 1] - xNodes[i - 1]) - h[i - 1] * mu[i - 1];
-                mu[i] = h[i] / l[i];
-                z[i] = (alpha[i] - h[i - 1] * z[i - 1]) / l[i];
-            }
-            const c = new Array(n + 1).fill(0), b = new Array(n).fill(0), d = new Array(n).fill(0);
-            for (let j = n - 1; j >= 0; j--) {
-                c[j] = z[j] - mu[j] * c[j + 1];
-                b[j] = (yNodes[j + 1] - yNodes[j]) / h[j] - h[j] * (c[j + 1] + 2 * c[j]) / 3;
-                d[j] = (c[j + 1] - c[j]) / (3 * h[j]);
-            }
-            for (let i = 0; i < n; i++) {
-                if ((xEval >= xNodes[i] && xEval <= xNodes[i + 1]) || i === n - 1) {
-                    const dx = xEval - xNodes[i];
-                    return yNodes[i] + b[i] * dx + c[i] * dx * dx + d[i] * dx * dx * dx;
-                }
-            }
-            return yNodes[n];
-        }
-
-        function simularM4Local(tipo) {
-            const numNodos = tipo !== "MAL_CONDICIONADO" ? 7 : 13;
-            const xNodes = Array.from({ length: numNodos }, (_, i) => (6.0 * i) / (numNodos - 1));
-            const yExact = (t) => Math.exp(-0.2 * t) * Math.sin(t) + 2.0;
-            const ruidoDeterminista = [0.015, -0.052, 0.038, 0.047, -0.098, -0.065, 0.006, -0.016, -0.001, -0.043, 0.044, 0.039, 0.003];
-            const yNodes = xNodes.map((x, idx) => yExact(x) + (tipo === "ESTRES" ? ruidoDeterminista[idx % ruidoDeterminista.length] : 0));
-            const xEval = Array.from({ length: 49 }, (_, i) => (6.0 * i) / 48);
-            const yRef = xEval.map(yExact);
-            const yLag = xEval.map(x => lagrangeJS(xNodes, yNodes, x));
-            const ySpl = xEval.map(x => splinesCubicosJS(xNodes, yNodes, x));
-            const rmseLag = Math.sqrt(yLag.reduce((s, v, i) => s + Math.pow(v - yRef[i], 2), 0) / xEval.length);
-            const rmseSpl = Math.sqrt(ySpl.reduce((s, v, i) => s + Math.pow(v - yRef[i], 2), 0) / xEval.length);
-            registrarHistorialLocal(tipo, "Módulo 4: Reconstrucción de señales de sensores");
-            return {
-                escenario: tipo,
-                nodos: { x: xNodes, y: yNodes },
-                curvas: { x: xEval, ref: yRef, lag: yLag, spl: ySpl },
-                errores: { lag: rmseLag, spl: rmseSpl }
-            };
-        }
-
-        // --- CONTROL DE VISTAS Y EJECUCIÓN ---
-        function mostrarVista(vista) {
-            ['inicio', 'modulo1', 'modulo2', 'modulo3', 'modulo4', 'der', 'historial'].forEach(v => {
-                document.getElementById('vista-' + v).classList.add('hidden');
-            });
-            document.getElementById('vista-' + vista).classList.remove('hidden');
-        }
-
-        async function ejecutarM1(forzado = null) {
-            const esc = forzado || document.getElementById('select-m1').value;
-            if (forzado) document.getElementById('select-m1').value = esc;
-            let data;
-            try {
-                const res = await fetch('/api/ejecutar_m1', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ escenario: esc }) });
-                if (!res.ok) throw new Error('Fallback local');
-                data = await res.json();
-            } catch (e) {
-                data = simularM1Local(esc);
-            }
-
-            document.getElementById('m1-t-ex').innerText = data.referencia.t_det.toFixed(4);
-            document.getElementById('m1-t-num').innerText = data.raiz_bisec.resultado.toFixed(4);
-            document.getElementById('m1-d-ex').innerText = data.referencia.d_frenado.toFixed(4);
-            document.getElementById('m1-d-num').innerText = data.int_simpson.resultado.toFixed(4);
-
-            if (chartM1_EDO) chartM1_EDO.destroy();
-            chartM1_EDO = new Chart(document.getElementById('chart-m1-edo').getContext('2d'), {
-                type: 'line',
-                data: { labels: data.edo_rk4.historial.map(h => h.t), datasets: [{ label: 'v(t) RK4', data: data.edo_rk4.historial.map(h => h.y[0]), borderColor: '#dc2626', pointRadius: 2 }] }
-            });
-
-            if (chartM1_Raiz) chartM1_Raiz.destroy();
-            chartM1_Raiz = new Chart(document.getElementById('chart-m1-raiz').getContext('2d'), {
-                type: 'line',
-                data: { labels: data.raiz_bisec.historial.map(h => h.iter), datasets: [{ label: 'Log10 Err', data: data.raiz_bisec.historial.map(h => Math.log10(Math.max(h.error_abs, 1e-12))), borderColor: '#2563eb' }] }
-            });
-        }
-
-        async function ejecutarM2(forzado = null) {
-            const esc = forzado || document.getElementById('select-m2').value;
-            if (forzado) document.getElementById('select-m2').value = esc;
-            let data;
-            try {
-                const res = await fetch('/api/ejecutar_m2', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ escenario: esc }) });
-                if (!res.ok) throw new Error('Fallback local');
-                data = await res.json();
-            } catch (e) {
-                data = simularM2Local(esc);
-            }
-
-            document.getElementById('m2-cond').innerText = data.condicion;
-            document.getElementById('m2-ref').innerText = '[' + data.referencia.join(', ') + ']';
-            document.getElementById('m2-t-ex').innerText = data.raiz_newton.exacto.toFixed(4);
-            document.getElementById('m2-t-newton').innerText = data.raiz_newton.resultado.toFixed(4);
-
-            const tbody = document.getElementById('tabla-m2-metodos');
-            tbody.innerHTML = '';
-            const datasets = [];
-            const colores = { 'Jacobi': '#ef4444', 'Gauss-Seidel': '#f59e0b', 'Gradiente Conjugado': '#2563eb', 'Factorización LU': '#10b981' };
-
-            for (const [nom, inf] of Object.entries(data.metodos)) {
-                tbody.innerHTML += `<tr><td class="p-2.5 font-bold">${nom}</td><td class="p-2.5">${inf.iteraciones_totales}</td><td class="p-2.5">[${inf.solucion.join(', ')}]</td><td class="p-2.5">${inf.error_abs.toExponential(4)}</td></tr>`;
-                datasets.push({ label: nom, data: inf.historial.map(h => ({ x: h.iter, y: Math.log10(Math.max(h.error_abs, 1e-16)) })), borderColor: colores[nom] || '#64748b', fill: false });
-            }
-
-            if (chartM2_Conv) chartM2_Conv.destroy();
-            chartM2_Conv = new Chart(document.getElementById('chart-m2-conv').getContext('2d'), {
-                type: 'line', data: { datasets }, options: { parsing: false, scales: { x: { type: 'linear', title: { display: true, text: 'Iteración' } }, y: { title: { display: true, text: 'Log10(Error Abs.)' } } } }
-            });
-        }
-
-        async function ejecutarM3(forzado = null) {
-            const esc = forzado || document.getElementById('select-m3').value;
-            if (forzado) document.getElementById('select-m3').value = esc;
-            let data;
-            try {
-                const res = await fetch('/api/ejecutar_m3', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ escenario: esc }) });
-                if (!res.ok) throw new Error('Fallback local');
-                data = await res.json();
-            } catch (e) {
-                data = simularM3Local(esc);
-            }
-
-            document.getElementById('m3-energia').innerText = data.energia.toFixed(4);
-
-            if (chartM3_Osc) chartM3_Osc.destroy();
-            chartM3_Osc = new Chart(document.getElementById('chart-m3-osc').getContext('2d'), {
-                type: 'line',
-                data: { labels: data.edo_rk4.historial.map(h => h.t), datasets: [{ label: 'x(t) Oscilación RK4', data: data.edo_rk4.historial.map(h => h.y[0]), borderColor: '#d97706', pointRadius: 0 }] }
-            });
-        }
-
-        async function ejecutarM4(forzado = null) {
-            const esc = forzado || document.getElementById('select-m4').value;
-            if (forzado) document.getElementById('select-m4').value = esc;
-            let data;
-            try {
-                const res = await fetch('/api/ejecutar_m4', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ escenario: esc }) });
-                if (!res.ok) throw new Error('Fallback local');
-                data = await res.json();
-            } catch (e) {
-                data = simularM4Local(esc);
-            }
-
-            document.getElementById('m4-rmse-lag').innerText = data.errores.lag.toExponential(4);
-            document.getElementById('m4-rmse-spl').innerText = data.errores.spl.toExponential(4);
-
-            const nodosData = data.curvas.x.map(x => {
-                const idx = data.nodos.x.findIndex(nx => Math.abs(nx - x) < 1e-6);
-                return idx !== -1 ? data.nodos.y[idx] : null;
-            });
-
-            if (chartM4_Curvas) chartM4_Curvas.destroy();
-            chartM4_Curvas = new Chart(document.getElementById('chart-m4-curvas').getContext('2d'), {
-                type: 'line',
-                data: {
-                    labels: data.curvas.x.map(x => x.toFixed(2)),
-                    datasets: [
-                        { label: 'Referencia', data: data.curvas.ref, borderColor: '#10b981', borderDash: [5, 5], pointRadius: 0 },
-                        { label: 'Lagrange', data: data.curvas.lag, borderColor: '#f97316', pointRadius: 0 },
-                        { label: 'Splines', data: data.curvas.spl, borderColor: '#7c3aed', pointRadius: 0 },
-                        { label: 'Nodos', data: nodosData, borderColor: '#0f172a', backgroundColor: '#0f172a', pointRadius: 5, showLine: false }
-                    ]
-                }
-            });
-
-            if (chartM4_Error) chartM4_Error.destroy();
-            chartM4_Error = new Chart(document.getElementById('chart-m4-error').getContext('2d'), {
-                type: 'bar',
-                data: { labels: ['Lagrange', 'Splines'], datasets: [{ label: 'RMSE', data: [data.errores.lag, data.errores.spl], backgroundColor: ['#f97316', '#7c3aed'] }] }
-            });
-        }
-
-        async function cargarHistorial() {
-            let filas;
-            try {
-                const res = await fetch('/api/historial');
-                if (!res.ok) throw new Error('Fallback local');
-                filas = await res.json();
-            } catch (e) {
-                filas = JSON.parse(localStorage.getItem("simtele_hist_v2") || JSON.stringify(HISTORIAL_INICIAL));
-            }
-            const tbody = document.getElementById('tabla-historial');
-            tbody.innerHTML = '';
-            filas.forEach(f => {
-                tbody.innerHTML += `<tr>
-          <td class="p-2.5 font-bold">#${f.sim_id}</td><td class="p-2.5">${f.fecha}</td>
-          <td class="p-2.5 font-semibold text-blue-700">${f.tipo}</td><td class="p-2.5">${f.caso || 'Módulo SIMTELE-RISK'}</td>
-        </tr>`;
-            });
-        }
-    </script>
+    <script src="static/js/motor.js"></script>
+    <script src="static/js/app.js"></script>
 </body>
 
 </html>

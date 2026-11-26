@@ -17,6 +17,7 @@ CREATE TABLE IF NOT EXISTS simulacion (
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     usuario_equipo TEXT,
     estado TEXT NOT NULL,
+    snapshot_json TEXT,
     FOREIGN KEY (escenario_id) REFERENCES escenario(id) ON DELETE CASCADE
 );
 CREATE TABLE IF NOT EXISTS ejecucion_metodo (
